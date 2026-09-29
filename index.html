@@ -6,6 +6,7 @@
   <title>ONLINE SHOP - MWC PALU SELATAN</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* PALETTE: Orange #FF9E20, Toska #215E61, Dark Charcoal #1D2128, Light Grey #F4F2F2 */
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: #1D2128; color: #F4F2F2; padding: 20px; }
 
@@ -15,7 +16,7 @@
     
     .nav-menu { display: flex; gap: 20px; align-items: center; }
     .nav-item { cursor: pointer; color: #F4F2F2; font-size: 16px; font-weight: 600; text-decoration: none; padding: 6px 12px; border-radius: 6px; }
-    .nav-item:hover, .nav-item.active { color: #FF9E20; background: rgba(255,158,32,0.1); }
+    .nav-item:hover, .nav-item.active { color: #FF9E20; background: rgba(255,158,32,0.15); }
 
     .indicator-badge { display: inline-block; width: 12px; height: 12px; background-color: #ef4444; border-radius: 50%; margin-left: 6px; box-shadow: 0 0 10px #ef4444; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0% { transform: scale(0.9); } 50% { transform: scale(1.3); } 100% { transform: scale(0.9); } }
@@ -79,7 +80,7 @@
     <div id="productContainer" class="product-grid"></div>
   </main>
 
-  <!-- Pemesanan / Admin View -->
+  <!-- Pemesanan View -->
   <section id="pesananView" class="order-section">
     <h2><i class="fa-solid fa-list-check"></i> Pesanan Masuk (Admin)</h2>
     <div id="orderTableContainer"></div>
@@ -104,23 +105,29 @@
   </div>
 
   <script>
-    // PASTA_KAN WEB APP URL GOOGLE APPS SCRIPT BARU HASIL DEPLOY DI SINI:
+    // PASTA_KAN WEB APP URL GOOGLE APPS SCRIPT DI SINI:
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyCuz5W2Ho6yvQeth7x9CqsRMBaSoh8XEBtApCjvUzpkZLDj8LrOG1yfHLxdL8n3SHh8A/exec";
     
     let allProducts = [];
     let cart = [];
 
+    // Security Helper Function untuk Frontend
+    function cleanHTML(str) {
+      return String(str || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
     async function loadStoreData() {
       const loadingDiv = document.getElementById("loading");
       try {
-        const response = await fetch(GAS_URL, { method: "GET", redirect: "follow" });
-        if (!response.ok) throw new Error("HTTP Status " + response.status);
+        const cleanUrl = GAS_URL.trim() + "?t=" + new Date().getTime();
+        const response = await fetch(cleanUrl);
+        if (!response.ok) throw new Error("Status HTTP: " + response.status);
         
         const data = await response.json();
         allProducts = data.produk || [];
 
-        // Update indikator merah menyala
-        document.getElementById("redIndicator").style.display = data.ada_pesanan_baru ? "inline-block" : "none";
+        const redInd = document.getElementById("redIndicator");
+        if (redInd) redInd.style.display = data.ada_pesanan_baru ? "inline-block" : "none";
 
         renderProducts(allProducts);
         renderOrders(data.pesanan || []);
@@ -129,8 +136,8 @@
         if (loadingDiv) {
           loadingDiv.innerHTML = `
             <div style="background:#f87171; color:#1D2128; padding:15px; border-radius:8px; display:inline-block; margin-top:20px;">
-              <i class="fa-solid fa-triangle-exclamation"></i> <strong>Gagal Mengambil Data Spreadsheet!</strong><br>
-              <small>Pastikan Deploy Apps Script diatur ke <b>Who has access: Anyone</b>.</small>
+              <i class="fa-solid fa-triangle-exclamation"></i> <strong>Gagal Terhubung Ke Apps Script!</strong><br>
+              <small>Pastikan Akses Deploy diatur ke <b>Who has access: Anyone</b>.</small>
             </div>`;
         }
       }
@@ -157,12 +164,12 @@
         container.innerHTML += `
           <div class="product-card">
             <div class="card-img-container">
-              <img src="${imgUrl}" alt="${p.nama_produk}" onerror="this.src='https://via.placeholder.com/200?text=Gambar+Drive+Error'">
+              <img src="${imgUrl}" alt="${cleanHTML(p.nama_produk)}" onerror="this.src='https://via.placeholder.com/200?text=Gambar+Drive+Error'">
             </div>
-            <h3 style="margin-top:12px; color:#F4F2F2;">${p.nama_produk || 'Produk'}</h3>
+            <h3 style="margin-top:12px; color:#F4F2F2;">${cleanHTML(p.nama_produk)}</h3>
             <div class="stok-info ${stokClass}">${stokText}</div>
             <p style="color:#FF9E20; font-size:18px; font-weight:bold;">Rp ${Number(p.harga || 0).toLocaleString('id-ID')}</p>
-            <button class="btn-add-cart" ${disabledAttr} onclick="addToCart('${p.nama_produk}', ${p.harga}, ${stok})">
+            <button class="btn-add-cart" ${disabledAttr} onclick="addToCart('${cleanHTML(p.nama_produk)}', ${p.harga}, ${stok})">
               ${stok > 0 ? '+ Tambah ke Keranjang' : 'Stok Habis'}
             </button>
           </div>
@@ -182,12 +189,12 @@
         const isBaru = String(o.status_pesanan).toUpperCase() === 'BARU';
         html += `
           <tr>
-            <td>${o.waktu_pesanan || '-'}</td>
-            <td>${o.id_pesanan || '-'}</td>
-            <td>${o.nama_pembeli || '-'}</td>
-            <td>${o.no_telepon || '-'}</td>
+            <td>${cleanHTML(o.waktu_pesanan)}</td>
+            <td>${cleanHTML(o.id_pesanan)}</td>
+            <td>${cleanHTML(o.nama_pembeli)}</td>
+            <td>${cleanHTML(o.no_telepon)}</td>
             <td>Rp ${Number(o.total_bayar || 0).toLocaleString('id-ID')}</td>
-            <td class="${isBaru ? 'status-baru' : ''}">${isBaru ? '🔴 BARU' : o.status_pesanan}</td>
+            <td class="${isBaru ? 'status-baru' : ''}">${isBaru ? '🔴 BARU' : cleanHTML(o.status_pesanan)}</td>
           </tr>
         `;
       });
@@ -230,13 +237,13 @@
       cartList.innerHTML = cart.map(item => `
         <div class="cart-item">
           <div>
-            <strong>${item.nama}</strong><br>
+            <strong>${cleanHTML(item.nama)}</strong><br>
             <small style="color:#FF9E20;">Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</small>
           </div>
           <div>
-            <button onclick="changeQty('${item.nama}', -1)" style="padding:2px 8px; background:#215E61; color:white; border:none; border-radius:4px; cursor:pointer;">-</button>
+            <button onclick="changeQty('${cleanHTML(item.nama)}', -1)" style="padding:2px 8px; background:#215E61; color:white; border:none; border-radius:4px; cursor:pointer;">-</button>
             <span style="margin:0 8px; font-weight:bold;">${item.qty}</span>
-            <button onclick="changeQty('${item.nama}', 1)" style="padding:2px 8px; background:#215E61; color:white; border:none; border-radius:4px; cursor:pointer;">+</button>
+            <button onclick="changeQty('${cleanHTML(item.nama)}', 1)" style="padding:2px 8px; background:#215E61; color:white; border:none; border-radius:4px; cursor:pointer;">+</button>
           </div>
         </div>
       `).join('');
@@ -261,7 +268,6 @@
       modal.style.display = modal.style.display === "flex" ? "none" : "flex";
     }
 
-    // Fungsi Perpindahan Navigasi Menu
     function showSection(section) {
       const katalogView = document.getElementById("katalogView");
       const pesananView = document.getElementById("pesananView");
@@ -318,7 +324,6 @@
       }
     }
 
-    // Jalankan pertama kali
     loadStoreData();
     setInterval(loadStoreData, 30000);
   </script>
