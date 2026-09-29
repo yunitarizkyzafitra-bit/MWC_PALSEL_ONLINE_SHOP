@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Store - Cyber Design</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #0b111e; color: #ffffff; padding: 20px; }
+
+    /* Header Navigasi & Indikator Merah */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #121a2d; border-radius: 12px; margin-bottom: 30px; border: 1px solid #1e293b; }
+    .logo { font-size: 22px; font-weight: bold; color: #00f2fe; }
+    .nav-menu { display: flex; gap: 20px; align-items: center; }
+    .nav-item { position: relative; cursor: pointer; color: #94a3b8; font-size: 16px; font-weight: 500; text-decoration: none; }
+    .nav-item:hover, .nav-item.active { color: #ffffff; }
+    
+    /* Indikator Merah Menyala di Menu Pemesanan */
+    .indicator-badge {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background-color: #ef4444;
+      border-radius: 50%;
+      margin-left: 6px;
+      box-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444;
+      animation: pulse-red 1.5s infinite;
+    }
+    @keyframes pulse-red {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    /* Grid & Product Card UI persis seperti Foto */
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
+    .product-card { background: #121b2c; border-radius: 16px; padding: 20px; border: 1px solid #1e2d4a; position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 242, 254, 0.15); }
+    
+    .card-img-container { position: relative; background: #0a111f; border-radius: 12px; padding: 20px; height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .card-img-container img { max-width: 100%; max-height: 100%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); }
+    
+    .badge-new { position: absolute; top: 12px; left: 12px; background: #00f2fe; color: #000; font-size: 11px; font-weight: bold; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; }
+    .btn-like { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.05); border: none; color: #94a3b8; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
+    .btn-like:hover { color: #ef4444; background: rgba(239,68,68,0.1); }
+
+    .card-content { margin-top: 15px; }
+    .card-title { font-size: 18px; font-weight: bold; color: #ffffff; }
+    .card-category { font-size: 13px; color: #64748b; margin-top: 2px; }
+    .card-rating { font-size: 13px; color: #ffb703; margin: 8px 0; }
+    .card-rating span { color: #64748b; margin-left: 5px; }
+
+    .card-price { display: flex; align-items: baseline; gap: 8px; margin: 10px 0; }
+    .price-current { font-size: 20px; font-weight: bold; color: #00f2fe; }
+    .price-old { font-size: 14px; color: #64748b; text-decoration: line-through; }
+
+    /* Color Selector Dots */
+    .color-options { display: flex; gap: 8px; margin: 12px 0; }
+    .color-dot { width: 16px; height: 16px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+    .color-dot.active { border-color: #ffffff; transform: scale(1.1); }
+
+    /* Quantity Controls & Add to Cart Button */
+    .quantity-control { display: flex; align-items: center; justify-content: space-between; background: #0a111f; border-radius: 8px; padding: 6px 12px; margin-bottom: 12px; border: 1px solid #1e2d4a; width: 100px; }
+    .btn-qty { background: none; border: none; color: #ffffff; font-size: 16px; cursor: pointer; }
+    .qty-value { font-size: 14px; font-weight: bold; }
+
+    .btn-add-cart { width: 100%; padding: 12px; background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%); border: none; border-radius: 8px; color: #000; font-weight: bold; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.2s; }
+    .btn-add-cart:hover { opacity: 0.9; }
+
+    /* Section Pesanan Admin Modal / View */
+    .order-section { background: #121b2c; border-radius: 16px; padding: 20px; margin-top: 30px; display: none; border: 1px solid #1e2d4a; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #1e2d4a; font-size: 14px; }
+    th { color: #00f2fe; }
+    .status-baru { color: #ef4444; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo"><i class="fa-solid fa-code"></i> CyberStore</div>
+    <div class="nav-menu">
+      <a href="#" class="nav-item active" onclick="showSection('katalog')">Katalog</a>
+      <a href="#" class="nav-item" onclick="showSection('pesanan')">
+        Pemesanan 
+        <span id="redIndicator" class="indicator-badge" style="display: none;" title="Ada Pesanan Baru!"></span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Katalog Produk View -->
+  <main id="katalogView">
+    <div id="loading" style="text-align: center; color: #00f2fe; padding: 40px;">
+      <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+      <p style="margin-top: 10px;">Memuat Katalog Produk dari Google Sheets...</p>
+    </div>
+    <div class="product-grid" id="productContainer"></div>
+  </main>
+
+  <!-- Pemesanan / Orders View -->
+  <section id="pesananView" class="order-section">
+    <h2><i class="fa-solid fa-list-check"></i> Daftar Pesanan Masuk</h2>
+    <div id="orderTableContainer">
+      <p style="color: #64748b; margin-top: 10px;">Memuat data pesanan...</p>
+    </div>
+  </section>
+
+  <script>
+    // MASUKKAN WEB APP URL GOOGLE APPS SCRIPT ANDA DI SINI:
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbzKYWIi87XiXGaY5NAROSxOj5YJQlNb44erG1aF94x6FBCC1Sw2b7j-yEQgbKOYc7INqg/exec";
+
+    async function loadData() {
+      try {
+        const response = await fetch(GAS_URL);
+        const data = await response.json();
+
+        // 1. Cek Indikator Merah Menyala
+        const redIndicator = document.getElementById("redIndicator");
+        if (data.ada_pesanan_baru) {
+          redIndicator.style.display = "inline-block"; // Tampilkan lampu merah menyala!
+        } else {
+          redIndicator.style.display = "none";
+        }
+
+        // 2. Render Katalog Produk persis seperti foto
+        renderProducts(data.produk);
+
+        // 3. Render Tabel Pesanan
+        renderOrders(data.pesanan);
+
+      } catch (err) {
+        console.error("Gagal mengambil data:", err);
+        document.getElementById("loading").innerHTML = "<p style='color:#ef4444;'>Gagal memuat data dari Google Sheets.</p>";
+      }
+    }
+
+    function renderProducts(products) {
+      const container = document.getElementById("productContainer");
+      document.getElementById("loading").style.display = "none";
+      container.innerHTML = "";
+
+      products.forEach(p => {
+        // Konversi URL Gambar Google Drive secara otomatis
+        let imgUrl = p.url_foto || "https://via.placeholder.com/300x200?text=No+Image";
+        if (imgUrl.includes("drive.google.com") && imgUrl.includes("/d/")) {
+          const fileId = imgUrl.split("/d/")[1].split("/")[0];
+          imgUrl = `https://lh3.googleusercontent.com/d/${fileId}`;
+        }
+
+        const hargaFormat = Number(p.harga || 0).toLocaleString("en-US", { style: "currency", currency: "USD" });
+
+        container.innerHTML += `
+          <div class="product-card">
+            <div class="card-img-container">
+              <span class="badge-new">NEW</span>
+              <button class="btn-like"><i class="fa-regular fa-heart"></i></button>
+              <img src="${imgUrl}" alt="${p.nama_produk}" onerror="this.src='https://via.placeholder.com/300x200?text=Shoe+Image'">
+            </div>
+            <div class="card-content">
+              <div class="card-title">${p.nama_produk}</div>
+              <div class="card-category">${p.kategori || 'Shoes'}</div>
+              <div class="card-rating">
+                <i class="fa-solid fa-star"></i> 4.8 <span>(2.4k reviews)</span>
+              </div>
+              <div class="card-price">
+                <span class="price-current">${hargaFormat}</span>
+                <span class="price-old">$159.99</span>
+              </div>
+              <div class="color-options">
+                <div class="color-dot active" style="background: #00f2fe;"></div>
+                <div class="color-dot" style="background: #ef4444;"></div>
+                <div class="color-dot" style="background: #ffffff;"></div>
+                <div class="color-dot" style="background: #3b82f6;"></div>
+              </div>
+              <div class="quantity-control">
+                <button class="btn-qty" onclick="changeQty(this, -1)">-</button>
+                <span class="qty-value">1</span>
+                <button class="btn-qty" onclick="changeQty(this, 1)">+</button>
+              </div>
+              <button class="btn-add-cart" onclick="addToCart('${p.nama_produk}', ${p.harga})">
+                <i class="fa-solid fa-cart-shopping"></i> Add to Cart
+              </button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderOrders(orders) {
+      const container = document.getElementById("orderTableContainer");
+      if (!orders || orders.length === 0) {
+        container.innerHTML = "<p style='color: #64748b;'>Belum ada pesanan masuk.</p>";
+        return;
+      }
+
+      let html = `<table>
+        <thead>
+          <tr>
+            <th>Waktu</th>
+            <th>ID Pesanan</th>
+            <th>Nama Pembeli</th>
+            <th>Rincian Barang</th>
+            <th>Total</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>`;
+
+      orders.forEach(o => {
+        const isBaru = String(o.status_pesanan).toUpperCase() === 'BARU';
+        const statusClass = isBaru ? 'status-baru' : '';
+        html += `
+          <tr>
+            <td>${o.waktu_pesanan || '-'}</td>
+            <td>${o.id_pesanan || '-'}</td>
+            <td>${o.nama_pembeli || '-'}</td>
+            <td>${o.rincian_barang || '-'}</td>
+            <td>Rp ${Number(o.total_bayar || 0).toLocaleString('id-ID')}</td>
+            <td class="${statusClass}">${isBaru ? '🔴 BARU' : o.status_pesanan}</td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table>`;
+      container.innerHTML = html;
+    }
+
+    function changeQty(btn, change) {
+      const qtySpan = btn.parentElement.querySelector(".qty-value");
+      let qty = parseInt(qtySpan.innerText) + change;
+      if (qty < 1) qty = 1;
+      qtySpan.innerText = qty;
+    }
+
+    function showSection(section) {
+      if (section === 'katalog') {
+        document.getElementById("katalogView").style.display = "block";
+        document.getElementById("pesananView").style.display = "none";
+      } else {
+        document.getElementById("katalogView").style.display = "none";
+        document.getElementById("pesananView").style.display = "block";
+      }
+    }
+
+    // Load data pertama kali
+    loadData();
+    // Auto-refresh setiap 30 detik untuk update indikator merah real-time
+    setInterval(loadData, 30000);
+  </script>
+</body>
+</html>
