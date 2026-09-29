@@ -3,68 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CyberStore - Toko Online Google Sheets & Drive</title>
+  <title>ONLINE SHOP - MWC PALU SELATAN</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Sign-In SDK -->
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
+    /* Palette MWC PALU SELATAN: #FF9E20, #215E61, #1D2128, #F4F2F2 */
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #0b111e; color: #ffffff; padding: 20px; }
+    body { background-color: #1D2128; color: #F4F2F2; padding: 20px; }
 
-    header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #121a2d; border-radius: 12px; margin-bottom: 30px; border: 1px solid #1e293b; }
-    .logo { font-size: 22px; font-weight: bold; color: #00f2fe; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #215E61; border-radius: 12px; margin-bottom: 30px; border-bottom: 4px solid #FF9E20; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .logo { font-size: 20px; font-weight: bold; color: #FF9E20; display: flex; align-items: center; gap: 10px; }
+    .logo span { color: #F4F2F2; font-size: 16px; }
+    
     .nav-menu { display: flex; gap: 20px; align-items: center; }
-    .nav-item { cursor: pointer; color: #94a3b8; font-size: 16px; font-weight: 500; text-decoration: none; }
-    .nav-item:hover, .nav-item.active { color: #ffffff; }
+    .nav-item { cursor: pointer; color: #F4F2F2; font-size: 16px; font-weight: 600; text-decoration: none; }
+    .nav-item:hover { color: #FF9E20; }
 
     /* Indikator Merah Menyala */
-    .indicator-badge { display: inline-block; width: 10px; height: 10px; background-color: #ef4444; border-radius: 50%; margin-left: 6px; box-shadow: 0 0 10px #ef4444; animation: pulse 1.5s infinite; }
+    .indicator-badge { display: inline-block; width: 12px; height: 12px; background-color: #ef4444; border-radius: 50%; margin-left: 6px; box-shadow: 0 0 10px #ef4444; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0% { transform: scale(0.9); } 50% { transform: scale(1.3); } 100% { transform: scale(0.9); } }
 
-    /* Floating Cart Button */
-    .floating-cart { position: fixed; bottom: 30px; right: 30px; background: linear-gradient(90deg, #00f2fe, #4facfe); color: #000; padding: 14px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(0,242,254,0.4); display: flex; align-items: center; gap: 10px; z-index: 99; }
-    .cart-count { background: #ef4444; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
+    /* Floating Cart Button MWC Palette */
+    .floating-cart { position: fixed; bottom: 30px; right: 30px; background: #FF9E20; color: #1D2128; padding: 14px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(255, 158, 32, 0.4); display: flex; align-items: center; gap: 10px; z-index: 99; transition: transform 0.2s; }
+    .floating-cart:hover { transform: scale(1.05); }
+    .cart-count { background: #1D2128; color: #FF9E20; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
 
-    /* Product Grid Modern UI */
+    /* Product Grid UI */
     .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
-    .product-card { background: #121b2c; border-radius: 16px; padding: 20px; border: 1px solid #1e2d4a; position: relative; transition: transform 0.2s; }
-    .product-card:hover { transform: translateY(-5px); }
-    .card-img-container { background: #0a111f; border-radius: 12px; padding: 15px; height: 180px; display: flex; align-items: center; justify-content: center; }
+    .product-card { background: #215E61; border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); position: relative; transition: transform 0.2s; }
+    .product-card:hover { transform: translateY(-5px); border-color: #FF9E20; }
+    
+    .card-img-container { background: #1D2128; border-radius: 12px; padding: 15px; height: 190px; display: flex; align-items: center; justify-content: center; }
     .card-img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
     
     .stok-info { margin: 8px 0; font-size: 13px; font-weight: bold; }
-    .stok-tersedia { color: #10b981; }
-    .stok-tipis { color: #f59e0b; }
-    .stok-habis { color: #ef4444; }
+    .stok-tersedia { color: #34d399; }
+    .stok-tipis { color: #FF9E20; }
+    .stok-habis { color: #f87171; }
 
-    .btn-add-cart { width: 100%; padding: 12px; background: linear-gradient(90deg, #00f2fe 0%, #4facfe 100%); border: none; border-radius: 8px; color: #000; font-weight: bold; cursor: pointer; margin-top: 10px; }
-    .btn-add-cart:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+    .btn-add-cart { width: 100%; padding: 12px; background: #FF9E20; border: none; border-radius: 8px; color: #1D2128; font-weight: bold; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; }
+    .btn-add-cart:hover { opacity: 0.9; }
+    .btn-add-cart:disabled { background: #4b5563; color: #9ca3af; cursor: not-allowed; }
 
-    /* Modal Keranjang Belanja */
+    /* Modal Keranjang & Form Checkout */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
-    .modal-content { background: #121b2c; padding: 25px; border-radius: 16px; width: 90%; max-width: 500px; border: 1px solid #1e2d4a; max-height: 90vh; overflow-y: auto; }
-    .cart-item { display: flex; justify-content: space-between; align-items: center; margin: 12px 0; padding-bottom: 10px; border-bottom: 1px solid #1e2d4a; }
-    .input-field { width: 100%; padding: 10px; margin: 8px 0; background: #0a111f; border: 1px solid #1e2d4a; color: white; border-radius: 6px; }
+    .modal-content { background: #1D2128; padding: 25px; border-radius: 16px; width: 90%; max-width: 500px; border: 2px solid #215E61; max-height: 90vh; overflow-y: auto; color: #F4F2F2; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; margin: 12px 0; padding-bottom: 10px; border-bottom: 1px solid #215E61; }
+    .input-field { width: 100%; padding: 12px; margin: 8px 0; background: #215E61; border: 1px solid rgba(255,255,255,0.2); color: #F4F2F2; border-radius: 6px; outline: none; }
+    .input-field::placeholder { color: #cbd5e1; }
 
     /* Section Pesanan Admin */
-    .order-section { background: #121b2c; border-radius: 16px; padding: 20px; margin-top: 30px; display: none; border: 1px solid #1e2d4a; }
+    .order-section { background: #215E61; border-radius: 16px; padding: 20px; margin-top: 30px; display: none; }
     table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #1e2d4a; font-size: 14px; }
-    th { color: #00f2fe; }
-    .status-baru { color: #ef4444; font-weight: bold; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; }
+    th { color: #FF9E20; }
+    .status-baru { color: #f87171; font-weight: bold; }
   </style>
 </head>
 <body>
 
-  <!-- Google One-Tap Container -->
-  <div id="g_id_onload"
-       data-client_id="MASUKKAN_GOOGLE_CLIENT_ID_ANDA"
-       data-callback="handleCredentialResponse"
-       data-auto_select="true">
-  </div>
-
   <header>
-    <div class="logo"><i class="fa-solid fa-bag-shopping"></i> CyberStore</div>
+    <div class="logo">
+      <i class="fa-solid fa-store"></i> MWC PALU SELATAN <span>Toko Online</span>
+    </div>
     <div class="nav-menu">
       <a class="nav-item" onclick="showSection('katalog')">Katalog</a>
       <a class="nav-item" onclick="showSection('pesanan')">Pemesanan <span id="redIndicator" class="indicator-badge" style="display:none;"></span></a>
@@ -77,63 +77,43 @@
     <span id="cartCount" class="cart-count">0</span>
   </div>
 
-  <!-- Main Views -->
   <main id="katalogView">
-    <div id="loading" style="text-align:center; color:#00f2fe; padding:40px;">
+    <div id="loading" style="text-align:center; color:#FF9E20; padding:40px;">
       <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
-      <p style="margin-top:10px;">Memuat data dari Google Sheets...</p>
+      <p style="margin-top:10px;">Memuat Katalog MWC Palu Selatan...</p>
     </div>
     <div id="productContainer" class="product-grid"></div>
   </main>
 
   <section id="pesananView" class="order-section">
-    <h2><i class="fa-solid fa-list-check"></i> Daftar Pesanan Masuk</h2>
+    <h2><i class="fa-solid fa-list-check"></i> Pesanan Masuk (Admin)</h2>
     <div id="orderTableContainer"></div>
   </section>
 
-  <!-- Modal Keranjang & Checkout -->
+  <!-- Modal Checkout (TANPA ISIAN EMAIL) -->
   <div id="cartModal" class="modal">
     <div class="modal-content">
-      <h2><i class="fa-solid fa-shopping-basket"></i> Keranjang Belanja</h2>
+      <h2 style="color:#FF9E20;"><i class="fa-solid fa-basket-shopping"></i> Keranjang Belanja</h2>
       <div id="cartList" style="margin-top: 15px;"></div>
-      <h3 style="margin-top: 15px; color: #00f2fe;">Total: <span id="cartTotal">Rp 0</span></h3>
+      <h3 style="margin-top: 15px; color: #FF9E20;">Total: <span id="cartTotal">Rp 0</span></h3>
       
-      <hr style="border-color: #1e2d4a; margin: 15px 0;">
-      <h4>Formulir Pemesanan:</h4>
-      <input type="email" id="custEmail" class="input-field" placeholder="Email Google" autocomplete="email" required>
-      <input type="text" id="custName" class="input-field" placeholder="Nama Lengkap" required>
-      <input type="text" id="custPhone" class="input-field" placeholder="No. WhatsApp / Telepon" required>
+      <hr style="border-color: #215E61; margin: 15px 0;">
+      <h4>Formulir Pemesanan Langsung:</h4>
+      <input type="text" id="custName" class="input-field" placeholder="Nama Lengkap Pembeli" required>
+      <input type="text" id="custPhone" class="input-field" placeholder="Nomor WhatsApp / HP" required>
       <textarea id="custAddress" class="input-field" placeholder="Alamat Pengiriman Lengkap" required></textarea>
 
-      <button class="btn-add-cart" onclick="submitCheckout()">Kirim Pesanan Sekarang</button>
-      <button onclick="toggleCartModal()" style="width:100%; background:transparent; color:#94a3b8; border:none; margin-top:10px; cursor:pointer;">Batal / Tutup</button>
+      <button class="btn-add-cart" onclick="submitCheckout()">KIRIM PESANAN SEKARANG</button>
+      <button onclick="toggleCartModal()" style="width:100%; background:transparent; color:#94a3b8; border:none; margin-top:10px; cursor:pointer;">Batal / Kembali</button>
     </div>
   </div>
 
   <script>
-    // MASUKKAN WEB APP URL GOOGLE APPS SCRIPT ANDA DI SINI:
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyv44m1H2PN1AsIATm50BsCoRw8KqRG3njxBbVJJVuynXvZWEBeYZ6ajaRPTvaBjhZeGg/exec";
+    // MASUKKAN WEB APP URL GOOGLE APPS SCRIPT ANDA DI SINI
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwyLafU3fMOXmHs9q9T87MFTUQ9peOz3jKNBNIIxou1s6KSDpRm2U3iZ33JTlnE6Rqplw/exec";
     
     let allProducts = [];
     let cart = [];
-    let userLoggedInEmail = "";
-
-    // Handle Google Login Response
-    function handleCredentialResponse(response) {
-      const payload = decodeJwtResponse(response.credential);
-      userLoggedInEmail = payload.email;
-      document.getElementById("custEmail").value = payload.email;
-      document.getElementById("custName").value = payload.name;
-    }
-
-    function decodeJwtResponse(token) {
-      var base64Url = token.split('.')[1];
-      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload);
-    }
 
     async function loadStoreData() {
       try {
@@ -168,9 +148,9 @@
             <div class="card-img-container">
               <img src="${imgUrl}" alt="${p.nama_produk}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
             </div>
-            <h3 style="margin-top:10px;">${p.nama_produk}</h3>
+            <h3 style="margin-top:12px; color:#F4F2F2;">${p.nama_produk}</h3>
             <div class="stok-info ${stokClass}">${stokText}</div>
-            <p style="color:#00f2fe; font-size:18px; font-weight:bold;">Rp ${Number(p.harga || 0).toLocaleString('id-ID')}</p>
+            <p style="color:#FF9E20; font-size:18px; font-weight:bold;">Rp ${Number(p.harga || 0).toLocaleString('id-ID')}</p>
             <button class="btn-add-cart" ${disabledAttr} onclick="addToCart('${p.nama_produk}', ${p.harga}, ${stok})">
               ${stok > 0 ? '+ Tambah ke Keranjang' : 'Stok Habis'}
             </button>
@@ -182,19 +162,19 @@
     function renderOrders(orders) {
       const container = document.getElementById("orderTableContainer");
       if (!orders || orders.length === 0) {
-        container.innerHTML = "<p style='color:#64748b;'>Belum ada pesanan masuk.</p>";
+        container.innerHTML = "<p style='color:#94a3b8;'>Belum ada pesanan masuk.</p>";
         return;
       }
 
-      let html = `<table><thead><tr><th>Waktu</th><th>ID Pesanan</th><th>Email</th><th>Nama</th><th>Total</th><th>Status</th></tr></thead><tbody>`;
+      let html = `<table><thead><tr><th>Waktu</th><th>ID Pesanan</th><th>Nama</th><th>No. HP</th><th>Total</th><th>Status</th></tr></thead><tbody>`;
       orders.forEach(o => {
         const isBaru = String(o.status_pesanan).toUpperCase() === 'BARU';
         html += `
           <tr>
             <td>${o.waktu_pesanan || '-'}</td>
             <td>${o.id_pesanan || '-'}</td>
-            <td>${o.email || '-'}</td>
             <td>${o.nama_pembeli || '-'}</td>
+            <td>${o.no_telepon || '-'}</td>
             <td>Rp ${Number(o.total_bayar || 0).toLocaleString('id-ID')}</td>
             <td class="${isBaru ? 'status-baru' : ''}">${isBaru ? '🔴 BARU' : o.status_pesanan}</td>
           </tr>
@@ -232,7 +212,7 @@
 
       let cartList = document.getElementById("cartList");
       if (cart.length === 0) {
-        cartList.innerHTML = "<p style='color:#64748b;'>Keranjang masih kosong.</p>";
+        cartList.innerHTML = "<p style='color:#94a3b8;'>Keranjang masih kosong.</p>";
         return;
       }
 
@@ -240,12 +220,12 @@
         <div class="cart-item">
           <div>
             <strong>${item.nama}</strong><br>
-            <small>Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</small>
+            <small style="color:#FF9E20;">Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</small>
           </div>
           <div>
-            <button onclick="changeQty('${item.nama}', -1)" style="padding:2px 8px;">-</button>
-            <span style="margin:0 5px;">${item.qty}</span>
-            <button onclick="changeQty('${item.nama}', 1)" style="padding:2px 8px;">+</button>
+            <button onclick="changeQty('${item.nama}', -1)" style="padding:2px 8px; background:#215E61; color:white; border:none; border-radius:4px; cursor:pointer;">-</button>
+            <span style="margin:0 8px; font-weight:bold;">${item.qty}</span>
+            <button onclick="changeQty('${item.nama}', 1)" style="padding:2px 8px; background:#215E61; color:white; border:none; border-radius:4px; cursor:pointer;">+</button>
           </div>
         </div>
       `).join('');
@@ -276,23 +256,22 @@
     }
 
     async function submitCheckout() {
-      const email = document.getElementById("custEmail").value.trim();
       const name = document.getElementById("custName").value.trim();
       const phone = document.getElementById("custPhone").value.trim();
       const address = document.getElementById("custAddress").value.trim();
 
-      if (!email || !name || !phone || !address) {
-        alert("⚠️ Mohon isi Email, Nama, Telepon, dan Alamat Pengiriman.");
+      if (!name || !phone || !address) {
+        alert("⚠️ Mohon isi Nama, Nomor HP/WhatsApp, dan Alamat Pengiriman.");
         return;
       }
 
       if (cart.length === 0) {
-        alert("⚠️ Keranjang belanja Anda kosong.");
+        alert("⚠️ Keranjang belanja Anda masih kosong.");
         return;
       }
 
       const totalPrice = cart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
-      const payload = { email, nama: name, telepon: phone, alamat: address, items: cart, total: totalPrice };
+      const payload = { nama: name, telepon: phone, alamat: address, items: cart, total: totalPrice };
 
       try {
         const response = await fetch(GAS_URL, {
@@ -303,7 +282,7 @@
 
         const res = await response.json();
         if (res.result === "success") {
-          alert("🎉 Pesanan berhasil dikirim! ID Pesanan: " + res.orderId);
+          alert("🎉 Pesanan MWC Palu Selatan berhasil dikirim! ID Pesanan: " + res.orderId);
           cart = [];
           updateCartUI();
           toggleCartModal();
@@ -315,7 +294,7 @@
     }
 
     loadStoreData();
-    setInterval(loadStoreData, 30000); // Auto-refresh indikator merah setiap 30 detik
+    setInterval(loadStoreData, 30000);
   </script>
 </body>
 </html>
