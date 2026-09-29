@@ -6,7 +6,6 @@
   <title>ONLINE SHOP - MWC PALU SELATAN</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Palette MWC PALU SELATAN: #FF9E20, #215E61, #1D2128, #F4F2F2 */
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: #1D2128; color: #F4F2F2; padding: 20px; }
 
@@ -15,24 +14,21 @@
     .logo span { color: #F4F2F2; font-size: 16px; }
     
     .nav-menu { display: flex; gap: 20px; align-items: center; }
-    .nav-item { cursor: pointer; color: #F4F2F2; font-size: 16px; font-weight: 600; text-decoration: none; }
-    .nav-item:hover { color: #FF9E20; }
+    .nav-item { cursor: pointer; color: #F4F2F2; font-size: 16px; font-weight: 600; text-decoration: none; padding: 6px 12px; border-radius: 6px; }
+    .nav-item:hover, .nav-item.active { color: #FF9E20; background: rgba(255,158,32,0.1); }
 
-    /* Indikator Merah Menyala */
     .indicator-badge { display: inline-block; width: 12px; height: 12px; background-color: #ef4444; border-radius: 50%; margin-left: 6px; box-shadow: 0 0 10px #ef4444; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0% { transform: scale(0.9); } 50% { transform: scale(1.3); } 100% { transform: scale(0.9); } }
 
-    /* Floating Cart Button MWC Palette */
     .floating-cart { position: fixed; bottom: 30px; right: 30px; background: #FF9E20; color: #1D2128; padding: 14px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(255, 158, 32, 0.4); display: flex; align-items: center; gap: 10px; z-index: 99; transition: transform 0.2s; }
     .floating-cart:hover { transform: scale(1.05); }
     .cart-count { background: #1D2128; color: #FF9E20; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
 
-    /* Product Grid UI */
     .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
     .product-card { background: #215E61; border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); position: relative; transition: transform 0.2s; }
     .product-card:hover { transform: translateY(-5px); border-color: #FF9E20; }
     
-    .card-img-container { background: #1D2128; border-radius: 12px; padding: 15px; height: 190px; display: flex; align-items: center; justify-content: center; }
+    .card-img-container { background: #1D2128; border-radius: 12px; padding: 15px; height: 190px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .card-img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
     
     .stok-info { margin: 8px 0; font-size: 13px; font-weight: bold; }
@@ -44,14 +40,12 @@
     .btn-add-cart:hover { opacity: 0.9; }
     .btn-add-cart:disabled { background: #4b5563; color: #9ca3af; cursor: not-allowed; }
 
-    /* Modal Keranjang & Form Checkout */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
     .modal-content { background: #1D2128; padding: 25px; border-radius: 16px; width: 90%; max-width: 500px; border: 2px solid #215E61; max-height: 90vh; overflow-y: auto; color: #F4F2F2; }
     .cart-item { display: flex; justify-content: space-between; align-items: center; margin: 12px 0; padding-bottom: 10px; border-bottom: 1px solid #215E61; }
     .input-field { width: 100%; padding: 12px; margin: 8px 0; background: #215E61; border: 1px solid rgba(255,255,255,0.2); color: #F4F2F2; border-radius: 6px; outline: none; }
     .input-field::placeholder { color: #cbd5e1; }
 
-    /* Section Pesanan Admin */
     .order-section { background: #215E61; border-radius: 16px; padding: 20px; margin-top: 30px; display: none; }
     table { width: 100%; border-collapse: collapse; margin-top: 15px; }
     th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; }
@@ -66,17 +60,17 @@
       <i class="fa-solid fa-store"></i> MWC PALU SELATAN <span>Toko Online</span>
     </div>
     <div class="nav-menu">
-      <a class="nav-item" onclick="showSection('katalog')">Katalog</a>
+      <a class="nav-item active" onclick="showSection('katalog')">Katalog</a>
       <a class="nav-item" onclick="showSection('pesanan')">Pemesanan <span id="redIndicator" class="indicator-badge" style="display:none;"></span></a>
     </div>
   </header>
 
-  <!-- Floating Cart -->
   <div class="floating-cart" onclick="toggleCartModal()">
     <i class="fa-solid fa-cart-shopping"></i> Keranjang
     <span id="cartCount" class="cart-count">0</span>
   </div>
 
+  <!-- Katalog View -->
   <main id="katalogView">
     <div id="loading" style="text-align:center; color:#FF9E20; padding:40px;">
       <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
@@ -85,12 +79,13 @@
     <div id="productContainer" class="product-grid"></div>
   </main>
 
+  <!-- Pemesanan / Admin View -->
   <section id="pesananView" class="order-section">
     <h2><i class="fa-solid fa-list-check"></i> Pesanan Masuk (Admin)</h2>
     <div id="orderTableContainer"></div>
   </section>
 
-  <!-- Modal Checkout (TANPA ISIAN EMAIL) -->
+  <!-- Modal Checkout -->
   <div id="cartModal" class="modal">
     <div class="modal-content">
       <h2 style="color:#FF9E20;"><i class="fa-solid fa-basket-shopping"></i> Keranjang Belanja</h2>
@@ -109,46 +104,62 @@
   </div>
 
   <script>
-    // MASUKKAN WEB APP URL GOOGLE APPS SCRIPT ANDA DI SINI
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwyLafU3fMOXmHs9q9T87MFTUQ9peOz3jKNBNIIxou1s6KSDpRm2U3iZ33JTlnE6Rqplw/exec";
+    // PASTA_KAN WEB APP URL GOOGLE APPS SCRIPT BARU HASIL DEPLOY DI SINI:
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyisbMd_DyP-toZbSr-8O5qk1yGTgWkcAYMqdTNMBrUO50pnOGfGzPle9yp4XeX41roYQ/exec";
     
     let allProducts = [];
     let cart = [];
 
     async function loadStoreData() {
+      const loadingDiv = document.getElementById("loading");
       try {
-        const response = await fetch(GAS_URL);
+        const response = await fetch(GAS_URL, { method: "GET", redirect: "follow" });
+        if (!response.ok) throw new Error("HTTP Status " + response.status);
+        
         const data = await response.json();
         allProducts = data.produk || [];
 
-        // Indikator Merah Menyala jika ada pesanan BARU
+        // Update indikator merah menyala
         document.getElementById("redIndicator").style.display = data.ada_pesanan_baru ? "inline-block" : "none";
 
         renderProducts(allProducts);
         renderOrders(data.pesanan || []);
       } catch (err) {
         console.error("Gagal memuat data:", err);
+        if (loadingDiv) {
+          loadingDiv.innerHTML = `
+            <div style="background:#f87171; color:#1D2128; padding:15px; border-radius:8px; display:inline-block; margin-top:20px;">
+              <i class="fa-solid fa-triangle-exclamation"></i> <strong>Gagal Mengambil Data Spreadsheet!</strong><br>
+              <small>Pastikan Deploy Apps Script diatur ke <b>Who has access: Anyone</b>.</small>
+            </div>`;
+        }
       }
     }
 
     function renderProducts(products) {
       const container = document.getElementById("productContainer");
-      document.getElementById("loading").style.display = "none";
+      const loadingDiv = document.getElementById("loading");
+      if (loadingDiv) loadingDiv.style.display = "none";
       container.innerHTML = "";
+
+      if (!products || products.length === 0) {
+        container.innerHTML = "<p style='grid-column: 1/-1; text-align:center; color:#94a3b8;'>Belum ada produk di Spreadsheet.</p>";
+        return;
+      }
 
       products.forEach(p => {
         const stok = Number(p.stok || 0);
         let stokClass = stok > 5 ? "stok-tersedia" : (stok > 0 ? "stok-tipis" : "stok-habis");
         let stokText = stok > 0 ? `Sisa Stok: ${stok} unit` : "STOK HABIS";
         let disabledAttr = stok <= 0 ? "disabled" : "";
-        let imgUrl = p.url_foto || "https://via.placeholder.com/200";
+        let imgUrl = p.url_foto || "https://via.placeholder.com/200?text=Foto+Produk";
 
         container.innerHTML += `
           <div class="product-card">
             <div class="card-img-container">
-              <img src="${imgUrl}" alt="${p.nama_produk}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+              <img src="${imgUrl}" alt="${p.nama_produk}" onerror="this.src='https://via.placeholder.com/200?text=Gambar+Drive+Error'">
             </div>
-            <h3 style="margin-top:12px; color:#F4F2F2;">${p.nama_produk}</h3>
+            <h3 style="margin-top:12px; color:#F4F2F2;">${p.nama_produk || 'Produk'}</h3>
             <div class="stok-info ${stokClass}">${stokText}</div>
             <p style="color:#FF9E20; font-size:18px; font-weight:bold;">Rp ${Number(p.harga || 0).toLocaleString('id-ID')}</p>
             <button class="btn-add-cart" ${disabledAttr} onclick="addToCart('${p.nama_produk}', ${p.harga}, ${stok})">
@@ -250,9 +261,23 @@
       modal.style.display = modal.style.display === "flex" ? "none" : "flex";
     }
 
+    // Fungsi Perpindahan Navigasi Menu
     function showSection(section) {
-      document.getElementById("katalogView").style.display = section === 'katalog' ? "block" : "none";
-      document.getElementById("pesananView").style.display = section === 'pesanan' ? "block" : "none";
+      const katalogView = document.getElementById("katalogView");
+      const pesananView = document.getElementById("pesananView");
+      const navItems = document.querySelectorAll(".nav-item");
+
+      if (section === 'katalog') {
+        katalogView.style.display = "block";
+        pesananView.style.display = "none";
+        navItems[0].classList.add("active");
+        navItems[1].classList.remove("active");
+      } else {
+        katalogView.style.display = "none";
+        pesananView.style.display = "block";
+        navItems[0].classList.remove("active");
+        navItems[1].classList.add("active");
+      }
     }
 
     async function submitCheckout() {
@@ -293,6 +318,7 @@
       }
     }
 
+    // Jalankan pertama kali
     loadStoreData();
     setInterval(loadStoreData, 30000);
   </script>
