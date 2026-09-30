@@ -8,168 +8,180 @@
   <style>
     /* PALETTE: Orange #FF9E20, Toska #215E61, Dark Charcoal #1D2128, Light Grey #F4F2F2 */
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #1D2128; color: #F4F2F2; padding: 20px; }
+    body { background-color: #1D2128; color: #F4F2F2; padding: 15px; }
 
-    header { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #215E61; border-radius: 12px; margin-bottom: 30px; border-bottom: 4px solid #FF9E20; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-    .logo { font-size: 20px; font-weight: bold; color: #FF9E20; display: flex; align-items: center; gap: 10px; }
-    .logo span { color: #F4F2F2; font-size: 16px; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #215E61; border-radius: 12px; margin-bottom: 20px; border-bottom: 4px solid #FF9E20; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    .logo { font-size: 18px; font-weight: bold; color: #FF9E20; display: flex; align-items: center; gap: 8px; }
     
-    .nav-menu { display: flex; gap: 20px; align-items: center; }
-    .nav-item { cursor: pointer; color: #F4F2F2; font-size: 16px; font-weight: 600; text-decoration: none; padding: 6px 12px; border-radius: 6px; }
+    .nav-menu { display: flex; gap: 8px; align-items: center; }
+    .nav-item { cursor: pointer; color: #F4F2F2; font-size: 13px; font-weight: 600; text-decoration: none; padding: 6px 10px; border-radius: 6px; }
     .nav-item:hover, .nav-item.active { color: #FF9E20; background: rgba(255,158,32,0.15); }
 
-    .indicator-badge { display: inline-block; width: 12px; height: 12px; background-color: #ef4444; border-radius: 50%; margin-left: 6px; box-shadow: 0 0 10px #ef4444; animation: pulse 1.5s infinite; }
+    .indicator-badge { display: inline-block; width: 10px; height: 10px; background-color: #ef4444; border-radius: 50%; margin-left: 4px; box-shadow: 0 0 10px #ef4444; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0% { transform: scale(0.9); } 50% { transform: scale(1.3); } 100% { transform: scale(0.9); } }
 
-    .floating-cart { position: fixed; bottom: 30px; right: 30px; background: #FF9E20; color: #1D2128; padding: 14px 24px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(255, 158, 32, 0.4); display: flex; align-items: center; gap: 10px; z-index: 99; transition: transform 0.2s; }
-    .floating-cart:hover { transform: scale(1.05); }
+    .floating-cart { position: fixed; bottom: 25px; right: 25px; background: #FF9E20; color: #1D2128; padding: 12px 20px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(255, 158, 32, 0.4); display: flex; align-items: center; gap: 8px; z-index: 99; }
     .cart-count { background: #1D2128; color: #FF9E20; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
 
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
-    .product-card { background: #215E61; border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); position: relative; transition: transform 0.2s; }
-    .product-card:hover { transform: translateY(-5px); border-color: #FF9E20; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+    .product-card { background: #215E61; border-radius: 14px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); position: relative; }
     
-    .card-img-container { background: #1D2128; border-radius: 12px; padding: 15px; height: 190px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .card-img-container { background: #1D2128; border-radius: 10px; padding: 10px; height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .card-img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
     
-    .stok-info { margin: 8px 0; font-size: 13px; font-weight: bold; }
+    .stok-info { margin: 6px 0; font-size: 12px; font-weight: bold; }
     .stok-tersedia { color: #34d399; }
     .stok-tipis { color: #FF9E20; }
     .stok-habis { color: #f87171; }
 
-    .btn-add-cart { width: 100%; padding: 12px; background: #FF9E20; border: none; border-radius: 8px; color: #1D2128; font-weight: bold; cursor: pointer; margin-top: 10px; transition: opacity 0.2s; }
-    .btn-add-cart:hover { opacity: 0.9; }
+    .btn-add-cart { width: 100%; padding: 10px; background: #FF9E20; border: none; border-radius: 8px; color: #1D2128; font-weight: bold; cursor: pointer; margin-top: 8px; }
     .btn-add-cart:disabled { background: #4b5563; color: #9ca3af; cursor: not-allowed; }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
-    .modal-content { background: #1D2128; padding: 25px; border-radius: 16px; width: 90%; max-width: 500px; border: 2px solid #215E61; max-height: 90vh; overflow-y: auto; color: #F4F2F2; }
-    .cart-item { display: flex; justify-content: space-between; align-items: center; margin: 12px 0; padding-bottom: 10px; border-bottom: 1px solid #215E61; }
-    .input-field { width: 100%; padding: 12px; margin: 8px 0; background: #215E61; border: 1px solid rgba(255,255,255,0.2); color: #F4F2F2; border-radius: 6px; outline: none; }
-    .input-field::placeholder { color: #cbd5e1; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center; }
+    .modal-content { background: #1D2128; padding: 20px; border-radius: 16px; width: 92%; max-width: 480px; border: 2px solid #215E61; max-height: 90vh; overflow-y: auto; color: #F4F2F2; }
+    .cart-item { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; padding-bottom: 8px; border-bottom: 1px solid #215E61; }
+    .input-field { width: 100%; padding: 10px; margin: 6px 0; background: #215E61; border: 1px solid rgba(255,255,255,0.2); color: #F4F2F2; border-radius: 6px; outline: none; }
+    
+    .order-summary-box { background: #215E61; padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #FF9E20; }
+    .order-summary-box p { font-size: 13px; margin-bottom: 4px; }
 
-    .order-section { background: #215E61; border-radius: 16px; padding: 20px; margin-top: 30px; display: none; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 14px; }
+    .order-section { background: #215E61; border-radius: 14px; padding: 15px; margin-top: 20px; display: none; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 13px; }
     th { color: #FF9E20; }
-    .status-baru { color: #f87171; font-weight: bold; }
+    .protected-text { color: #94a3b8; font-style: italic; font-size: 11px; }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="logo">
-      <i class="fa-solid fa-store"></i> MWC PALU SELATAN <span>Toko Online</span>
-    </div>
+    <div class="logo"><i class="fa-solid fa-store"></i> MWC PALU SELATAN</div>
     <div class="nav-menu">
       <a class="nav-item active" onclick="showSection('katalog')">Katalog</a>
-      <a class="nav-item" onclick="showSection('pesanan')">Pemesanan <span id="redIndicator" class="indicator-badge" style="display:none;"></span></a>
+      <a class="nav-item" onclick="showSection('pesanan')">Status Pesanan <span id="redIndicator" class="indicator-badge" style="display:none;"></span></a>
+      <a class="nav-item" id="adminLoginBtn" onclick="loginAdminPrompt()"><i class="fa-solid fa-lock"></i> Mode Admin</a>
     </div>
   </header>
 
   <div class="floating-cart" onclick="toggleCartModal()">
-    <i class="fa-solid fa-cart-shopping"></i> Keranjang
-    <span id="cartCount" class="cart-count">0</span>
+    <i class="fa-solid fa-cart-shopping"></i> Keranjang <span id="cartCount" class="cart-count">0</span>
   </div>
 
   <!-- Katalog View -->
   <main id="katalogView">
-    <div id="loading" style="text-align:center; color:#FF9E20; padding:40px;">
+    <div id="loading" style="text-align:center; color:#FF9E20; padding:30px;">
       <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
-      <p style="margin-top:10px;">Memuat Katalog MWC Palu Selatan...</p>
+      <p style="margin-top:8px;">Menghubungkan ke Database...</p>
     </div>
     <div id="productContainer" class="product-grid"></div>
   </main>
 
-  <!-- Pemesanan View -->
+  <!-- Upload Produk View (Khusus Admin) -->
+  <section id="adminView" class="order-section">
+    <h3 style="color:#FF9E20; margin-bottom:10px;"><i class="fa-solid fa-cloud-arrow-up"></i> Menu Admin - Upload Produk Baru</h3>
+    <input type="text" id="newProdName" class="input-field" placeholder="Nama Produk">
+    <input type="number" id="newProdPrice" class="input-field" placeholder="Harga (Rp)">
+    <input type="number" id="newProdStock" class="input-field" placeholder="Jumlah Stok">
+    <textarea id="newProdDesc" class="input-field" placeholder="Deskripsi Singkat"></textarea>
+    
+    <label style="font-size:12px; color:#FF9E20;">Pilih File Gambar:</label>
+    <input type="file" id="newProdImageFile" accept="image/*" class="input-field" onchange="previewAndConvertImage(this)">
+    <input type="hidden" id="newProdImageBase64">
+    
+    <button class="btn-add-cart" onclick="uploadNewProduct()" style="margin-top:10px;">+ UPLOAD KE SPREADSHEET</button>
+  </section>
+
+  <!-- Status Pesanan View -->
   <section id="pesananView" class="order-section">
-    <h2><i class="fa-solid fa-list-check"></i> Pesanan Masuk (Admin)</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="color:#FF9E20;"><i class="fa-solid fa-list-check"></i> Status Pesanan Masuk</h3>
+      <span id="adminStatusTag" style="font-size:12px; color:#34d399; font-weight:bold; display:none;">🔓 Mode Admin Aktif</span>
+    </div>
     <div id="orderTableContainer"></div>
   </section>
 
   <!-- Modal Checkout -->
   <div id="cartModal" class="modal">
     <div class="modal-content">
-      <h2 style="color:#FF9E20;"><i class="fa-solid fa-basket-shopping"></i> Keranjang Belanja</h2>
-      <div id="cartList" style="margin-top: 15px;"></div>
-      <h3 style="margin-top: 15px; color: #FF9E20;">Total: <span id="cartTotal">Rp 0</span></h3>
+      <h3 style="color:#FF9E20;"><i class="fa-solid fa-basket-shopping"></i> Form Pemesanan</h3>
+      <div id="cartList" style="margin-top: 10px;"></div>
       
-      <hr style="border-color: #215E61; margin: 15px 0;">
-      <h4>Formulir Pemesanan Langsung:</h4>
-      <input type="text" id="custName" class="input-field" placeholder="Nama Lengkap Pembeli" required>
-      <input type="text" id="custPhone" class="input-field" placeholder="Nomor WhatsApp / HP" required>
-      <textarea id="custAddress" class="input-field" placeholder="Alamat Pengiriman Lengkap" required></textarea>
+      <hr style="border-color: #215E61; margin: 12px 0;">
+      <h4>Isi Data Penerima:</h4>
+      <input type="text" id="custName" class="input-field" placeholder="Nama Lengkap Pembeli" oninput="updateOrderSummary()">
+      <input type="text" id="custPhone" class="input-field" placeholder="Nomor WhatsApp / HP" oninput="updateOrderSummary()">
+      <textarea id="custAddress" class="input-field" placeholder="Alamat Pengiriman Lengkap" oninput="updateOrderSummary()"></textarea>
 
-      <button class="btn-add-cart" onclick="submitCheckout()">KIRIM PESANAN SEKARANG</button>
-      <button onclick="toggleCartModal()" style="width:100%; background:transparent; color:#94a3b8; border:none; margin-top:10px; cursor:pointer;">Batal / Kembali</button>
+      <!-- MENU RINGKASAN & TOTAL PESANAN -->
+      <div id="orderSummaryBox" class="order-summary-box">
+        <h4 style="color:#FF9E20; margin-bottom:6px;"><i class="fa-solid fa-receipt"></i> Rincian Pesanan Anda:</h4>
+        <p><strong>Penerima:</strong> <span id="sumName">-</span> (<span id="sumPhone">-</span>)</p>
+        <p><strong>Alamat:</strong> <span id="sumAddress">-</span></p>
+        <p><strong>Item Belanja:</strong> <span id="sumItems">0 Barang</span></p>
+        <h3 style="color:#FF9E20; margin-top:6px;">TOTAL BAYAR: <span id="cartTotal">Rp 0</span></h3>
+      </div>
+
+      <button class="btn-add-cart" onclick="submitCheckout()" style="margin-top:15px;">KIRIM PESANAN SEKARANG</button>
+      <button onclick="toggleCartModal()" style="width:100%; background:transparent; color:#94a3b8; border:none; margin-top:8px; cursor:pointer;">Batal / Kembali</button>
     </div>
   </div>
 
   <script>
-    // PASTA_KAN WEB APP URL GOOGLE APPS SCRIPT DI SINI:
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyCuz5W2Ho6yvQeth7x9CqsRMBaSoh8XEBtApCjvUzpkZLDj8LrOG1yfHLxdL8n3SHh8A/exec";
-    
-    let allProducts = [];
-    let cart = [];
-
-    // Security Helper Function untuk Frontend
-    function cleanHTML(str) {
-      return String(str || '').replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxEOyeb4KFWIFunpJQaJRorzsolM1TQq1Se39sCSxJMcrD_UtkAVGaypQ8VeWmUv6If/exec";
+    let allProducts = [], cart = [];
+    let adminPIN = ""; // PIN Admin kosong saat awal
 
     async function loadStoreData() {
-      const loadingDiv = document.getElementById("loading");
       try {
-        const cleanUrl = GAS_URL.trim() + "?t=" + new Date().getTime();
-        const response = await fetch(cleanUrl);
-        if (!response.ok) throw new Error("Status HTTP: " + response.status);
-        
-        const data = await response.json();
-        allProducts = data.produk || [];
+        let fetchUrl = GAS_URL.trim() + "?nocache=" + new Date().getTime();
+        if (adminPIN) fetchUrl += "&pin=" + adminPIN;
 
-        const redInd = document.getElementById("redIndicator");
-        if (redInd) redInd.style.display = data.ada_pesanan_baru ? "inline-block" : "none";
+        const response = await fetch(fetchUrl);
+        const data = await response.json();
+        
+        allProducts = data.produk || [];
+        document.getElementById("redIndicator").style.display = data.ada_pesanan_baru ? "inline-block" : "none";
 
         renderProducts(allProducts);
-        renderOrders(data.pesanan || []);
+        renderOrders(data.pesanan || [], data.isAdmin);
+        loadSavedCustomerData();
       } catch (err) {
-        console.error("Gagal memuat data:", err);
-        if (loadingDiv) {
-          loadingDiv.innerHTML = `
-            <div style="background:#f87171; color:#1D2128; padding:15px; border-radius:8px; display:inline-block; margin-top:20px;">
-              <i class="fa-solid fa-triangle-exclamation"></i> <strong>Gagal Terhubung Ke Apps Script!</strong><br>
-              <small>Pastikan Akses Deploy diatur ke <b>Who has access: Anyone</b>.</small>
-            </div>`;
-        }
+        console.error("Gagal sinkron data:", err);
+      }
+    }
+
+    function loginAdminPrompt() {
+      const pin = prompt("🔐 Masukkan PIN Admin MWC Palu Selatan:");
+      if (pin) {
+        adminPIN = pin;
+        document.getElementById("adminStatusTag").style.display = "inline";
+        document.getElementById("adminLoginBtn").innerHTML = `<i class="fa-solid fa-unlock"></i> Admin Logged In`;
+        alert("🔑 Memverifikasi PIN Admin...");
+        loadStoreData();
       }
     }
 
     function renderProducts(products) {
       const container = document.getElementById("productContainer");
-      const loadingDiv = document.getElementById("loading");
-      if (loadingDiv) loadingDiv.style.display = "none";
+      document.getElementById("loading").style.display = "none";
       container.innerHTML = "";
-
-      if (!products || products.length === 0) {
-        container.innerHTML = "<p style='grid-column: 1/-1; text-align:center; color:#94a3b8;'>Belum ada produk di Spreadsheet.</p>";
-        return;
-      }
 
       products.forEach(p => {
         const stok = Number(p.stok || 0);
         let stokClass = stok > 5 ? "stok-tersedia" : (stok > 0 ? "stok-tipis" : "stok-habis");
         let stokText = stok > 0 ? `Sisa Stok: ${stok} unit` : "STOK HABIS";
         let disabledAttr = stok <= 0 ? "disabled" : "";
-        let imgUrl = p.url_foto || "https://via.placeholder.com/200?text=Foto+Produk";
+        let imgUrl = p.url_foto || "https://via.placeholder.com/200?text=Gambar+Produk";
 
         container.innerHTML += `
           <div class="product-card">
             <div class="card-img-container">
-              <img src="${imgUrl}" alt="${cleanHTML(p.nama_produk)}" onerror="this.src='https://via.placeholder.com/200?text=Gambar+Drive+Error'">
+              <img src="${imgUrl}" alt="${p.nama_produk}" onerror="this.src='https://via.placeholder.com/200?text=Foto+Error'">
             </div>
-            <h3 style="margin-top:12px; color:#F4F2F2;">${cleanHTML(p.nama_produk)}</h3>
+            <h3 style="margin-top:10px; font-size:16px;">${p.nama_produk}</h3>
             <div class="stok-info ${stokClass}">${stokText}</div>
-            <p style="color:#FF9E20; font-size:18px; font-weight:bold;">Rp ${Number(p.harga || 0).toLocaleString('id-ID')}</p>
-            <button class="btn-add-cart" ${disabledAttr} onclick="addToCart('${cleanHTML(p.nama_produk)}', ${p.harga}, ${stok})">
+            <p style="color:#FF9E20; font-size:16px; font-weight:bold;">Rp ${Number(p.harga || 0).toLocaleString('id-ID')}</p>
+            <button class="btn-add-cart" ${disabledAttr} onclick="addToCart('${p.nama_produk}', ${p.harga}, ${stok})">
               ${stok > 0 ? '+ Tambah ke Keranjang' : 'Stok Habis'}
             </button>
           </div>
@@ -177,87 +189,95 @@
       });
     }
 
-    function renderOrders(orders) {
+    function renderOrders(orders, isAdmin) {
       const container = document.getElementById("orderTableContainer");
-      if (!orders || orders.length === 0) {
-        container.innerHTML = "<p style='color:#94a3b8;'>Belum ada pesanan masuk.</p>";
-        return;
-      }
-
-      let html = `<table><thead><tr><th>Waktu</th><th>ID Pesanan</th><th>Nama</th><th>No. HP</th><th>Total</th><th>Status</th></tr></thead><tbody>`;
+      if (!orders || orders.length === 0) return container.innerHTML = "<p style='color:#94a3b8;'>Belum ada pesanan.</p>";
+      
+      let html = `<table><thead><tr><th>Waktu</th><th>ID Pesanan</th><th>Nama Pembeli</th><th>Total Bayar</th><th>Status</th></tr></thead><tbody>`;
+      
       orders.forEach(o => {
         const isBaru = String(o.status_pesanan).toUpperCase() === 'BARU';
+        
+        // Tampilan Terproteksi untuk Pembeli Biasa vs Admin
+        let namaDisplay = isAdmin ? o.nama_pembeli : `<span class="protected-text">🔒 Tersembunyi</span>`;
+        let totalDisplay = isAdmin ? `Rp ${Number(o.total_bayar||0).toLocaleString('id-ID')}` : `<span class="protected-text">🔒 Tersembunyi</span>`;
+
         html += `
           <tr>
-            <td>${cleanHTML(o.waktu_pesanan)}</td>
-            <td>${cleanHTML(o.id_pesanan)}</td>
-            <td>${cleanHTML(o.nama_pembeli)}</td>
-            <td>${cleanHTML(o.no_telepon)}</td>
-            <td>Rp ${Number(o.total_bayar || 0).toLocaleString('id-ID')}</td>
-            <td class="${isBaru ? 'status-baru' : ''}">${isBaru ? '🔴 BARU' : cleanHTML(o.status_pesanan)}</td>
+            <td>${o.waktu_pesanan||'-'}</td>
+            <td>${o.id_pesanan||'-'}</td>
+            <td>${namaDisplay}</td>
+            <td>${totalDisplay}</td>
+            <td style="${isBaru?'color:#f87171;font-weight:bold;':''}">${isBaru?'🔴 BARU':o.status_pesanan}</td>
           </tr>
         `;
       });
-      html += `</tbody></table>`;
-      container.innerHTML = html;
+      container.innerHTML = html + `</tbody></table>`;
+    }
+
+    function loadSavedCustomerData() {
+      const savedName = localStorage.getItem("mwc_cust_name") || "";
+      const savedPhone = localStorage.getItem("mwc_cust_phone") || "";
+      const savedAddr = localStorage.getItem("mwc_cust_addr") || "";
+
+      if(savedName) document.getElementById("custName").value = savedName;
+      if(savedPhone) document.getElementById("custPhone").value = savedPhone;
+      if(savedAddr) document.getElementById("custAddress").value = savedAddr;
+      updateOrderSummary();
+    }
+
+    function updateOrderSummary() {
+      const name = document.getElementById("custName").value.trim();
+      const phone = document.getElementById("custPhone").value.trim();
+      const addr = document.getElementById("custAddress").value.trim();
+
+      document.getElementById("sumName").innerText = name || "-";
+      document.getElementById("sumPhone").innerText = phone || "-";
+      document.getElementById("sumAddress").innerText = addr || "-";
+
+      let totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+      let totalPrice = cart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
+
+      document.getElementById("sumItems").innerText = totalItems + " Barang";
+      document.getElementById("cartTotal").innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
     }
 
     function addToCart(name, price, maxStock) {
       let item = cart.find(i => i.nama === name);
-      let currentQty = item ? item.qty : 0;
-
-      if (currentQty + 1 > maxStock) {
-        alert(`⚠️ Stok tidak mencukupi! Sisa stok hanya ${maxStock} unit.`);
-        return;
-      }
-
       if (item) {
+        if (item.qty + 1 > maxStock) return alert("⚠️ Stok maksimal tercapai!");
         item.qty += 1;
       } else {
         cart.push({ nama: name, harga: price, qty: 1, maxStok: maxStock });
       }
-
       updateCartUI();
-      alert(`✅ ${name} berhasil masuk keranjang!`);
+      alert(`✅ ${name} masuk keranjang!`);
     }
 
     function updateCartUI() {
-      let totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-      let totalPrice = cart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
-
-      document.getElementById("cartCount").innerText = totalItems;
-      document.getElementById("cartTotal").innerText = `Rp ${totalPrice.toLocaleString('id-ID')}`;
-
+      document.getElementById("cartCount").innerText = cart.reduce((sum, i) => sum + i.qty, 0);
       let cartList = document.getElementById("cartList");
+      
       if (cart.length === 0) {
-        cartList.innerHTML = "<p style='color:#94a3b8;'>Keranjang masih kosong.</p>";
-        return;
+        cartList.innerHTML = "<p style='color:#94a3b8;'>Keranjang kosong.</p>";
+      } else {
+        cartList.innerHTML = cart.map(i => `
+          <div class="cart-item">
+            <div><strong>${i.nama}</strong><br><small style="color:#FF9E20;">Rp ${i.harga.toLocaleString('id-ID')} x ${i.qty}</small></div>
+            <div>
+              <button onclick="changeQty('${i.nama}', -1)" style="padding:2px 6px;">-</button>
+              <span style="margin:0 5px;">${i.qty}</span>
+              <button onclick="changeQty('${i.nama}', 1)" style="padding:2px 6px;">+</button>
+            </div>
+          </div>
+        `).join('');
       }
-
-      cartList.innerHTML = cart.map(item => `
-        <div class="cart-item">
-          <div>
-            <strong>${cleanHTML(item.nama)}</strong><br>
-            <small style="color:#FF9E20;">Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</small>
-          </div>
-          <div>
-            <button onclick="changeQty('${cleanHTML(item.nama)}', -1)" style="padding:2px 8px; background:#215E61; color:white; border:none; border-radius:4px; cursor:pointer;">-</button>
-            <span style="margin:0 8px; font-weight:bold;">${item.qty}</span>
-            <button onclick="changeQty('${cleanHTML(item.nama)}', 1)" style="padding:2px 8px; background:#215E61; color:white; border:none; border-radius:4px; cursor:pointer;">+</button>
-          </div>
-        </div>
-      `).join('');
+      updateOrderSummary();
     }
 
     function changeQty(name, change) {
       let item = cart.find(i => i.nama === name);
       if (!item) return;
-
-      if (change > 0 && item.qty + 1 > item.maxStok) {
-        alert(`⚠️ Stok maksimal tercapai (${item.maxStok} unit).`);
-        return;
-      }
-
       item.qty += change;
       if (item.qty <= 0) cart = cart.filter(i => i.nama !== name);
       updateCartUI();
@@ -266,24 +286,43 @@
     function toggleCartModal() {
       const modal = document.getElementById("cartModal");
       modal.style.display = modal.style.display === "flex" ? "none" : "flex";
+      updateOrderSummary();
     }
 
-    function showSection(section) {
-      const katalogView = document.getElementById("katalogView");
-      const pesananView = document.getElementById("pesananView");
-      const navItems = document.querySelectorAll(".nav-item");
-
-      if (section === 'katalog') {
-        katalogView.style.display = "block";
-        pesananView.style.display = "none";
-        navItems[0].classList.add("active");
-        navItems[1].classList.remove("active");
-      } else {
-        katalogView.style.display = "none";
-        pesananView.style.display = "block";
-        navItems[0].classList.remove("active");
-        navItems[1].classList.add("active");
+    function previewAndConvertImage(input) {
+      if (input.files && input.files[0]) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById("newProdImageBase64").value = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
       }
+    }
+
+    async function uploadNewProduct() {
+      if (!adminPIN) return alert("🔐 Akses Ditolak! Masukkan PIN Admin terlebih dahulu di pojok kanan atas.");
+
+      const nama = document.getElementById("newProdName").value.trim();
+      const harga = document.getElementById("newProdPrice").value;
+      const stok = document.getElementById("newProdStock").value;
+      const deskripsi = document.getElementById("newProdDesc").value;
+      const urlFoto = document.getElementById("newProdImageBase64").value;
+
+      if (!nama || !harga || !stok) return alert("⚠️ Mohon isi Nama, Harga, dan Stok.");
+
+      const payload = { action: "ADD_PRODUCT", pin: adminPIN, nama_produk: nama, harga: harga, stok: stok, deskripsi: deskripsi, url_foto: urlFoto };
+
+      try {
+        const response = await fetch(GAS_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) });
+        const res = await response.json();
+        if (res.result === "success") {
+          alert("🎉 Produk berhasil ditambahkan!");
+          loadStoreData();
+          showSection('katalog');
+        } else {
+          alert("❌ Error: " + res.message);
+        }
+      } catch (err) { alert("❌ Gagal menambah produk."); }
     }
 
     async function submitCheckout() {
@@ -291,41 +330,40 @@
       const phone = document.getElementById("custPhone").value.trim();
       const address = document.getElementById("custAddress").value.trim();
 
-      if (!name || !phone || !address) {
-        alert("⚠️ Mohon isi Nama, Nomor HP/WhatsApp, dan Alamat Pengiriman.");
-        return;
-      }
+      if (!name || !phone || !address) return alert("⚠️ Mohon lengkapi Nama, HP, dan Alamat!");
+      if (cart.length === 0) return alert("⚠️ Keranjang belanja kosong.");
 
-      if (cart.length === 0) {
-        alert("⚠️ Keranjang belanja Anda masih kosong.");
-        return;
-      }
+      localStorage.setItem("mwc_cust_name", name);
+      localStorage.setItem("mwc_cust_phone", phone);
+      localStorage.setItem("mwc_cust_addr", address);
 
       const totalPrice = cart.reduce((sum, item) => sum + (item.harga * item.qty), 0);
       const payload = { nama: name, telepon: phone, alamat: address, items: cart, total: totalPrice };
 
       try {
-        const response = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify(payload)
-        });
-
+        const response = await fetch(GAS_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(payload) });
         const res = await response.json();
         if (res.result === "success") {
-          alert("🎉 Pesanan MWC Palu Selatan berhasil dikirim! ID Pesanan: " + res.orderId);
+          alert("🎉 Pesanan Anda berhasil dikirim! ID Pesanan: " + res.orderId);
           cart = [];
           updateCartUI();
           toggleCartModal();
           loadStoreData();
         }
-      } catch (err) {
-        alert("❌ Terjadi kesalahan saat mengirim pesanan.");
+      } catch (err) { alert("❌ Gagal mengirim pesanan."); }
+    }
+
+    function showSection(section) {
+      if (section === 'admin' && !adminPIN) {
+        loginAdminPrompt();
+        if (!adminPIN) return;
       }
+      document.getElementById("katalogView").style.display = section === 'katalog' ? "block" : "none";
+      document.getElementById("adminView").style.display = section === 'admin' ? "block" : "none";
+      document.getElementById("pesananView").style.display = section === 'pesanan' ? "block" : "none";
     }
 
     loadStoreData();
-    setInterval(loadStoreData, 30000);
   </script>
 </body>
 </html>
