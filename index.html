@@ -83,7 +83,7 @@
             
             <!-- Search Bar -->
             <div class="relative max-w-xl mx-auto">
-                <input type="text" id="searchInput" oninput="renderProducts()" placeholder="Cari nama, ID, atau deskripsi produk..." class="w-full pl-11 pr-4 py-3 rounded-2xl text-slate-800 focus:outline-none focus:ring-4 focus:ring-brand-amber shadow-xl font-medium">
+                <input type="text" id="searchInput" oninput="renderProducts()" placeholder="Cari nama, ID Kode, atau deskripsi..." class="w-full pl-11 pr-4 py-3 rounded-2xl text-slate-800 focus:outline-none focus:ring-4 focus:ring-brand-amber shadow-xl font-medium">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-lg"></i>
             </div>
         </div>
@@ -113,7 +113,7 @@
 
         <!-- KATALOG PRODUK GRID -->
         <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Produk di-render dinamis dari JavaScript -->
+            <!-- Dynamic Render -->
         </div>
     </main>
 
@@ -327,9 +327,9 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoGRiECidJFhNFp3ATZEu-ur4KqiRWNZWjEwVQ3PZUzgLnB_X_xDdZfyJlgJJjQchgg/exec";
+        const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYRTDgHUSEFuLdkoV-AySGP0gN4K7QjxxsEzoJ7Mp__C2ouoJi3lcWmNzdOD9gI9LYxA/exec";
 
-        // APP STATE INITIALIZATION
+        // INIT APP STATE
         let products = JSON.parse(localStorage.getItem('app_mwc_products')) || [];
         let cart = JSON.parse(localStorage.getItem('app_cart')) || [];
         let orders = JSON.parse(localStorage.getItem('app_orders')) || [];
@@ -337,7 +337,7 @@
         let adminPin = localStorage.getItem('app_admin_pin') || '123456';
         let isDataMasked = true;
 
-        // SANITIZATION FUNCTION
+        // SANITIZE HTML
         function sanitizeHTML(str) {
             if (!str) return '';
             return String(str).replace(/[&<>"']/g, function(m) {
@@ -345,19 +345,39 @@
             });
         }
 
-        // GENERATE KODE ID OTOMATIS BERDASARKAN KATEGORI
-        function generateProductCode(category) {
+        // GENERATE KODE ID OTOMATIS
+        function generateProductCode(category, index) {
             let prefix = "U";
             if (category === "Pakaian") prefix = "P";
             else if (category === "Kuliner") prefix = "M";
             else if (category === "Aksesoris") prefix = "A";
 
-            const countInCat = products.filter(p => p.category === category).length + 1;
-            const paddedNumber = String(countInCat).padStart(3, '0');
-            return `${prefix}-${paddedNumber}`;
+            const idx = index !== undefined ? index : (products.filter(p => p.category === category).length + 1);
+            return `${prefix}-${String(idx).padStart(3, '0')}`;
+        }
+
+        // AUTO MIGRATION SCRIPT (Perbaiki Produk Lama yang Belum Memiliki Kode ID)
+        function fixMissingProductCodes() {
+            let updated = false;
+            const counts = {};
+
+            products.forEach(p => {
+                p.id = String(p.id); // Ensure string ID
+                if (!p.code) {
+                    const cat = p.category || "Umum";
+                    counts[cat] = (counts[cat] || 0) + 1;
+                    p.code = generateProductCode(cat, counts[cat]);
+                    updated = true;
+                }
+            });
+
+            if (updated) {
+                localStorage.setItem('app_mwc_products', JSON.stringify(products));
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            fixMissingProductCodes();
             renderProducts();
             updateCartUI();
             updateStatusIndicator();
@@ -383,8 +403,8 @@
                         <div class="w-16 h-16 bg-emerald-50 text-brand-teal rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
                             <i class="fa-solid fa-box-open"></i>
                         </div>
-                        <h3 class="font-bold text-slate-700 text-base mb-1">Katalog Produk Masih Kosong</h3>
-                        <p class="text-xs text-slate-400 mb-4">Klik tombol "Unggah Produk Baru" di atas untuk menambahkan produk MWC PALU SELATAN.</p>
+                        <h3 class="font-bold text-slate-700 text-base mb-1">Katalog Produk Kosong</h3>
+                        <p class="text-xs text-slate-400 mb-4">Klik "Unggah Produk Baru" di atas untuk menambah produk ke E-Katalog MWC Palu Selatan.</p>
                         <button onclick="toggleUploadModal()" class="bg-brand-amber text-slate-900 font-bold px-4 py-2 rounded-xl text-xs shadow hover:bg-amber-500 transition">
                             <i class="fa-solid fa-plus-circle mr-1"></i> Tambah Produk Pertama
                         </button>
@@ -393,10 +413,10 @@
             }
 
             filtered.forEach(p => {
-                const isOutOfStock = p.stock <= 0;
+                const isOutOfStock = Number(p.stock) <= 0;
                 const stockBadge = isOutOfStock 
                     ? `<span class="bg-rose-100 text-rose-600 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Stok Habis</span>`
-                    : (p.stock <= 5 
+                    : (Number(p.stock) <= 5 
                         ? `<span class="bg-amber-100 text-amber-700 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Sisa ${p.stock}</span>`
                         : `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Stok: ${p.stock}</span>`);
 
@@ -406,15 +426,13 @@
                             <div class="relative h-48 bg-slate-100 overflow-hidden">
                                 <img src="${p.img}" alt="${sanitizeHTML(p.name)}" class="w-full h-full object-cover">
                                 <div class="absolute top-3 right-3">${stockBadge}</div>
-                                <span class="absolute top-3 left-3 bg-slate-900/70 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-0.5 rounded-lg">
+                                <span class="absolute top-3 left-3 bg-brand-teal text-white text-[11px] font-black px-2.5 py-1 rounded-lg shadow-md border border-emerald-400/30">
                                     [${p.code || 'PROD'}] ${sanitizeHTML(p.category)}
                                 </span>
                             </div>
                             <div class="p-4">
-                                <div class="flex justify-between items-center mb-1">
-                                    <h3 class="font-bold text-slate-800 text-base line-clamp-1">${sanitizeHTML(p.name)}</h3>
-                                </div>
-                                <p class="text-[11px] font-semibold text-brand-teal mb-1">ID: ${p.code || '-'}</p>
+                                <h3 class="font-bold text-slate-800 text-base line-clamp-1 mb-1">${sanitizeHTML(p.name)}</h3>
+                                <p class="text-[11px] font-bold text-brand-teal mb-1.5"><i class="fa-solid fa-barcode mr-1"></i> ID Kode: ${p.code || '-'}</p>
                                 <p class="text-xs text-slate-500 line-clamp-2 mb-3">${sanitizeHTML(p.desc)}</p>
                             </div>
                         </div>
@@ -424,11 +442,12 @@
                                 <span class="text-base font-extrabold text-brand-teal">Rp ${Number(p.price).toLocaleString('id-ID')}</span>
                             </div>
                             <div class="flex items-center space-x-1.5">
-                                <button onclick="deleteProduct(${p.id})" title="Hapus Produk" class="bg-rose-100 hover:bg-rose-200 text-rose-600 font-bold p-2.5 rounded-xl text-xs transition">
+                                <button onclick="deleteProduct('${p.id}')" title="Hapus Produk" class="bg-rose-100 hover:bg-rose-200 text-rose-600 font-bold p-2.5 rounded-xl text-xs transition">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
-                                <button onclick="addToCart(${p.id})" ${isOutOfStock ? 'disabled' : ''} class="${isOutOfStock ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-brand-teal hover:bg-brand-teal-dark text-white shadow-md'} font-bold p-2.5 rounded-xl text-xs transition">
+                                <button onclick="addToCart('${p.id}')" ${isOutOfStock ? 'disabled' : ''} class="${isOutOfStock ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-brand-teal hover:bg-brand-teal-dark text-white shadow-md'} font-bold px-3 py-2.5 rounded-xl text-xs flex items-center space-x-1 transition">
                                     <i class="fa-solid fa-cart-plus"></i>
+                                    <span>Beli</span>
                                 </button>
                             </div>
                         </div>
@@ -449,36 +468,38 @@
             renderProducts();
         }
 
+        // FUNGSI TAMBAH KE KERANJANG
         function addToCart(productId) {
-            const prod = products.find(p => p.id === productId);
-            if (!prod || prod.stock <= 0) return;
+            const prod = products.find(p => String(p.id) === String(productId));
+            if (!prod || Number(prod.stock) <= 0) return;
 
-            const existing = cart.find(item => item.id === productId);
+            const existing = cart.find(item => String(item.id) === String(productId));
             if (existing) {
-                if (existing.qty < prod.stock) {
+                if (existing.qty < Number(prod.stock)) {
                     existing.qty++;
                 } else {
                     alert('Mencapai batas stok yang tersedia.');
                     return;
                 }
             } else {
-                cart.push({ id: prod.id, code: prod.code, name: prod.name, price: prod.price, qty: 1, img: prod.img });
+                cart.push({ id: String(prod.id), code: prod.code, name: prod.name, price: Number(prod.price), qty: 1, img: prod.img });
             }
 
             saveCart();
             updateCartUI();
+            toggleCartDrawer();
         }
 
         function updateQty(id, delta) {
-            const item = cart.find(i => i.id === id);
-            const prod = products.find(p => p.id === id);
+            const item = cart.find(i => String(i.id) === String(id));
+            const prod = products.find(p => String(p.id) === String(id));
             if (!item) return;
 
             item.qty += delta;
             if (item.qty <= 0) {
-                cart = cart.filter(i => i.id !== id);
-            } else if (prod && item.qty > prod.stock) {
-                item.qty = prod.stock;
+                cart = cart.filter(i => String(i.id) !== String(id));
+            } else if (prod && item.qty > Number(prod.stock)) {
+                item.qty = Number(prod.stock);
                 alert('Stok tidak mencukupi.');
             }
 
@@ -512,9 +533,9 @@
                             <span class="text-xs text-brand-teal font-extrabold">Rp ${Number(item.price).toLocaleString('id-ID')}</span>
                         </div>
                         <div class="flex items-center space-x-2 bg-white px-2 py-1 rounded-xl border border-slate-200">
-                            <button onclick="updateQty(${item.id}, -1)" class="text-slate-500 hover:text-brand-coral font-bold px-1">-</button>
+                            <button onclick="updateQty('${item.id}', -1)" class="text-slate-500 hover:text-brand-coral font-bold px-1">-</button>
                             <span class="font-extrabold text-xs text-slate-800">${item.qty}</span>
-                            <button onclick="updateQty(${item.id}, 1)" class="text-slate-500 hover:text-brand-teal font-bold px-1">+</button>
+                            <button onclick="updateQty('${item.id}', 1)" class="text-slate-500 hover:text-brand-teal font-bold px-1">+</button>
                         </div>
                     </div>
                 `;
@@ -565,8 +586,8 @@
 
             // KURANGI STOK PRODUK
             cart.forEach(cartItem => {
-                const prod = products.find(p => p.id === cartItem.id);
-                if (prod) prod.stock = Math.max(0, prod.stock - cartItem.qty);
+                const prod = products.find(p => String(p.id) === String(cartItem.id));
+                if (prod) prod.stock = Math.max(0, Number(prod.stock) - cartItem.qty);
             });
             localStorage.setItem('app_mwc_products', JSON.stringify(products));
 
@@ -623,7 +644,7 @@
                 const autoCode = generateProductCode(categorySelected);
 
                 const newProd = {
-                    id: Date.now(),
+                    id: String(Date.now()),
                     code: autoCode,
                     name: sanitizeHTML(document.getElementById('newProdName').value),
                     category: categorySelected,
@@ -650,11 +671,11 @@
 
         // HAPUS PRODUK
         function deleteProduct(id) {
-            const prod = products.find(p => p.id === id);
+            const prod = products.find(p => String(p.id) === String(id));
             if (!prod) return;
 
             if (confirm(`Hapus produk "${prod.name}" [ID: ${prod.code || '-'}] dari E-Katalog?`)) {
-                products = products.filter(p => p.id !== id);
+                products = products.filter(p => String(p.id) !== String(id));
                 localStorage.setItem('app_mwc_products', JSON.stringify(products));
                 renderProducts();
             }
