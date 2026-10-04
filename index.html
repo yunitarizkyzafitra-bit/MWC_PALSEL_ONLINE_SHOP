@@ -83,7 +83,7 @@
             
             <!-- Search Bar -->
             <div class="relative max-w-xl mx-auto">
-                <input type="text" id="searchInput" oninput="renderProducts()" placeholder="Cari nama atau deskripsi produk..." class="w-full pl-11 pr-4 py-3 rounded-2xl text-slate-800 focus:outline-none focus:ring-4 focus:ring-brand-amber shadow-xl font-medium">
+                <input type="text" id="searchInput" oninput="renderProducts()" placeholder="Cari nama, ID, atau deskripsi produk..." class="w-full pl-11 pr-4 py-3 rounded-2xl text-slate-800 focus:outline-none focus:ring-4 focus:ring-brand-amber shadow-xl font-medium">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-lg"></i>
             </div>
         </div>
@@ -98,10 +98,10 @@
             <!-- Filter Kategori -->
             <div class="flex items-center space-x-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 custom-scroll">
                 <button onclick="filterCategory('All')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-brand-teal text-white whitespace-nowrap shadow-sm">Semua</button>
-                <button onclick="filterCategory('Umum')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Umum</button>
-                <button onclick="filterCategory('Pakaian')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Pakaian</button>
-                <button onclick="filterCategory('Aksesoris')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Aksesoris</button>
-                <button onclick="filterCategory('Kuliner')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Kuliner</button>
+                <button onclick="filterCategory('Pakaian')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Pakaian (P)</button>
+                <button onclick="filterCategory('Kuliner')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Kuliner (M)</button>
+                <button onclick="filterCategory('Aksesoris')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Aksesoris (A)</button>
+                <button onclick="filterCategory('Umum')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Umum (U)</button>
             </div>
 
             <!-- Tombol Unggah Produk Baru -->
@@ -121,13 +121,12 @@
     <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs sm:text-sm mt-12 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4">
             <p>© 2026 MWC PALU SELATAN E-Katalog. Hak Cipta Dilindungi.</p>
-            <p class="text-slate-500 mt-1">Terintegrasi Google Apps Script & GitHub Pages | Proteksi Data Aman</p>
+            <p class="text-slate-500 mt-1">Terintegrasi Google Apps Script & GitHub Pages | Kode ID Otomatis & Proteksi Data</p>
         </div>
     </footer>
 
     <!-- WIDGET CHATBOT LIVE ASSISTANT -->
     <div class="fixed bottom-5 right-5 z-40">
-        <!-- Chat Drawer Window -->
         <div id="chatWindow" class="hidden bg-white w-80 sm:w-96 rounded-2xl shadow-2xl border border-slate-200 mb-3 overflow-hidden flex flex-col transition-all duration-300 h-[420px]">
             <div class="bg-brand-teal text-white p-3.5 flex justify-between items-center">
                 <div class="flex items-center space-x-2">
@@ -154,7 +153,6 @@
             </div>
         </div>
 
-        <!-- Chat Trigger Button -->
         <button onclick="toggleChatbot()" class="bg-brand-teal hover:bg-brand-teal-dark text-white p-4 rounded-full shadow-2xl flex items-center justify-center transition transform hover:scale-105 border-2 border-brand-amber">
             <i class="fa-solid fa-comments text-2xl"></i>
         </button>
@@ -244,7 +242,7 @@
                 <h3 class="font-bold text-lg text-slate-800">Unggah Produk Baru</h3>
                 <button onclick="toggleUploadModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <form onsubmit="handleUploadProduct(event)" class="space-y-3 text-xs">
+            <form id="uploadProductForm" onsubmit="handleUploadProduct(event)" class="space-y-3 text-xs">
                 <div>
                     <label class="block font-bold text-slate-600 mb-1">Pilih Foto Produk</label>
                     <input type="file" id="newProdImg" accept="image/*" required class="w-full p-2 border border-slate-300 rounded-xl">
@@ -255,12 +253,12 @@
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block font-bold text-slate-600 mb-1">Kategori</label>
-                        <select id="newProdCat" class="w-full p-2.5 border border-slate-300 rounded-xl">
-                            <option value="Umum">Umum</option>
-                            <option value="Pakaian">Pakaian</option>
-                            <option value="Aksesoris">Aksesoris</option>
-                            <option value="Kuliner">Kuliner</option>
+                        <label class="block font-bold text-slate-600 mb-1">Kategori (ID Kode)</label>
+                        <select id="newProdCat" class="w-full p-2.5 border border-slate-300 rounded-xl font-medium">
+                            <option value="Pakaian">Pakaian (P-)</option>
+                            <option value="Kuliner">Kuliner (M-)</option>
+                            <option value="Aksesoris">Aksesoris (A-)</option>
+                            <option value="Umum">Umum (U-)</option>
                         </select>
                     </div>
                     <div>
@@ -276,7 +274,7 @@
                     <label class="block font-bold text-slate-600 mb-1">Deskripsi Singkat</label>
                     <textarea id="newProdDesc" required rows="2" placeholder="Deskripsi produk..." class="w-full p-2.5 border border-slate-300 rounded-xl focus:outline-none"></textarea>
                 </div>
-                <button type="submit" class="w-full bg-brand-teal hover:bg-brand-teal-dark text-white font-bold py-3 rounded-xl transition shadow">Tampilkan Produk</button>
+                <button type="submit" id="btnUploadSubmit" class="w-full bg-brand-teal hover:bg-brand-teal-dark text-white font-bold py-3 rounded-xl transition shadow">Tampilkan Produk</button>
             </form>
         </div>
     </div>
@@ -329,9 +327,9 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxJnWnM54Ww5HEi44Pu29JLrI1SRsHezxbJbJu_i9NGygn01wV5TKYsy4IKAx9usj2kYQ/exec";
+        const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoGRiECidJFhNFp3ATZEu-ur4KqiRWNZWjEwVQ3PZUzgLnB_X_xDdZfyJlgJJjQchgg/exec";
 
-        // APP STATE: PRODUK BAWAAN DIHAPUS BERSIH (KOSONG)
+        // APP STATE INITIALIZATION
         let products = JSON.parse(localStorage.getItem('app_mwc_products')) || [];
         let cart = JSON.parse(localStorage.getItem('app_cart')) || [];
         let orders = JSON.parse(localStorage.getItem('app_orders')) || [];
@@ -339,10 +337,24 @@
         let adminPin = localStorage.getItem('app_admin_pin') || '123456';
         let isDataMasked = true;
 
+        // SANITIZATION FUNCTION
         function sanitizeHTML(str) {
+            if (!str) return '';
             return String(str).replace(/[&<>"']/g, function(m) {
                 return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
             });
+        }
+
+        // GENERATE KODE ID OTOMATIS BERDASARKAN KATEGORI
+        function generateProductCode(category) {
+            let prefix = "U";
+            if (category === "Pakaian") prefix = "P";
+            else if (category === "Kuliner") prefix = "M";
+            else if (category === "Aksesoris") prefix = "A";
+
+            const countInCat = products.filter(p => p.category === category).length + 1;
+            const paddedNumber = String(countInCat).padStart(3, '0');
+            return `${prefix}-${paddedNumber}`;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -351,14 +363,17 @@
             updateStatusIndicator();
         });
 
+        // RENDER KATALOG PRODUK
         function renderProducts() {
             const grid = document.getElementById('productGrid');
-            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const searchQuery = (document.getElementById('searchInput').value || '').toLowerCase();
             grid.innerHTML = '';
 
             const filtered = products.filter(p => {
                 const matchCat = activeCategory === 'All' || p.category === activeCategory;
-                const matchSearch = p.name.toLowerCase().includes(searchQuery) || p.desc.toLowerCase().includes(searchQuery);
+                const matchSearch = (p.name || '').toLowerCase().includes(searchQuery) || 
+                                    (p.code || '').toLowerCase().includes(searchQuery) || 
+                                    (p.desc || '').toLowerCase().includes(searchQuery);
                 return matchCat && matchSearch;
             });
 
@@ -369,7 +384,7 @@
                             <i class="fa-solid fa-box-open"></i>
                         </div>
                         <h3 class="font-bold text-slate-700 text-base mb-1">Katalog Produk Masih Kosong</h3>
-                        <p class="text-xs text-slate-400 mb-4">Silakan klik tombol "Unggah Produk Baru" di atas untuk menambahkan produk MWC PALU SELATAN.</p>
+                        <p class="text-xs text-slate-400 mb-4">Klik tombol "Unggah Produk Baru" di atas untuk menambahkan produk MWC PALU SELATAN.</p>
                         <button onclick="toggleUploadModal()" class="bg-brand-amber text-slate-900 font-bold px-4 py-2 rounded-xl text-xs shadow hover:bg-amber-500 transition">
                             <i class="fa-solid fa-plus-circle mr-1"></i> Tambah Produk Pertama
                         </button>
@@ -391,21 +406,31 @@
                             <div class="relative h-48 bg-slate-100 overflow-hidden">
                                 <img src="${p.img}" alt="${sanitizeHTML(p.name)}" class="w-full h-full object-cover">
                                 <div class="absolute top-3 right-3">${stockBadge}</div>
-                                <span class="absolute top-3 left-3 bg-slate-900/60 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-0.5 rounded-lg">${sanitizeHTML(p.category)}</span>
+                                <span class="absolute top-3 left-3 bg-slate-900/70 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-0.5 rounded-lg">
+                                    [${p.code || 'PROD'}] ${sanitizeHTML(p.category)}
+                                </span>
                             </div>
                             <div class="p-4">
-                                <h3 class="font-bold text-slate-800 text-base mb-1 line-clamp-1">${sanitizeHTML(p.name)}</h3>
+                                <div class="flex justify-between items-center mb-1">
+                                    <h3 class="font-bold text-slate-800 text-base line-clamp-1">${sanitizeHTML(p.name)}</h3>
+                                </div>
+                                <p class="text-[11px] font-semibold text-brand-teal mb-1">ID: ${p.code || '-'}</p>
                                 <p class="text-xs text-slate-500 line-clamp-2 mb-3">${sanitizeHTML(p.desc)}</p>
                             </div>
                         </div>
                         <div class="p-4 pt-0 flex justify-between items-center">
                             <div>
                                 <span class="text-[10px] text-slate-400 block font-semibold">Harga</span>
-                                <span class="text-base font-extrabold text-brand-teal">Rp ${p.price.toLocaleString('id-ID')}</span>
+                                <span class="text-base font-extrabold text-brand-teal">Rp ${Number(p.price).toLocaleString('id-ID')}</span>
                             </div>
-                            <button onclick="addToCart(${p.id})" ${isOutOfStock ? 'disabled' : ''} class="${isOutOfStock ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-brand-teal hover:bg-brand-teal-dark text-white shadow-md'} font-bold p-3 rounded-xl text-xs transition">
-                                <i class="fa-solid fa-cart-plus"></i>
-                            </button>
+                            <div class="flex items-center space-x-1.5">
+                                <button onclick="deleteProduct(${p.id})" title="Hapus Produk" class="bg-rose-100 hover:bg-rose-200 text-rose-600 font-bold p-2.5 rounded-xl text-xs transition">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                                <button onclick="addToCart(${p.id})" ${isOutOfStock ? 'disabled' : ''} class="${isOutOfStock ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-brand-teal hover:bg-brand-teal-dark text-white shadow-md'} font-bold p-2.5 rounded-xl text-xs transition">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -437,7 +462,7 @@
                     return;
                 }
             } else {
-                cart.push({ id: prod.id, name: prod.name, price: prod.price, qty: 1, img: prod.img });
+                cart.push({ id: prod.id, code: prod.code, name: prod.name, price: prod.price, qty: 1, img: prod.img });
             }
 
             saveCart();
@@ -482,8 +507,9 @@
                     <div class="flex items-center space-x-3 bg-slate-50 p-3 rounded-2xl border border-slate-100">
                         <img src="${item.img}" class="w-12 h-12 rounded-xl object-cover">
                         <div class="flex-grow">
-                            <h4 class="font-bold text-xs text-slate-800 line-clamp-1">${sanitizeHTML(item.name)}</h4>
-                            <span class="text-xs text-brand-teal font-extrabold">Rp ${item.price.toLocaleString('id-ID')}</span>
+                            <span class="text-[10px] bg-emerald-100 text-teal-800 font-bold px-1.5 py-0.5 rounded">[${item.code || '-'}]</span>
+                            <h4 class="font-bold text-xs text-slate-800 line-clamp-1 mt-0.5">${sanitizeHTML(item.name)}</h4>
+                            <span class="text-xs text-brand-teal font-extrabold">Rp ${Number(item.price).toLocaleString('id-ID')}</span>
                         </div>
                         <div class="flex items-center space-x-2 bg-white px-2 py-1 rounded-xl border border-slate-200">
                             <button onclick="updateQty(${item.id}, -1)" class="text-slate-500 hover:text-brand-coral font-bold px-1">-</button>
@@ -517,6 +543,7 @@
             document.getElementById('checkoutModal').classList.add('hidden');
         }
 
+        // AKSI CHECKOUT PESANAN KE GOOGLE SPREADSHEET
         async function submitOrder(e) {
             e.preventDefault();
 
@@ -531,17 +558,19 @@
                 noHp: sanitizeHTML(document.getElementById('custPhone').value),
                 alamat: sanitizeHTML(document.getElementById('custAddress').value),
                 metodePembayaran: document.getElementById('custPayment').value,
-                items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
+                items: cart.map(i => ({ code: i.code, name: i.name, qty: i.qty, price: i.price })),
                 total: cart.reduce((sum, i) => sum + (i.price * i.qty), 0),
                 status: "Baru"
             };
 
+            // KURANGI STOK PRODUK
             cart.forEach(cartItem => {
                 const prod = products.find(p => p.id === cartItem.id);
                 if (prod) prod.stock = Math.max(0, prod.stock - cartItem.qty);
             });
             localStorage.setItem('app_mwc_products', JSON.stringify(products));
 
+            // INTEGRASI GS VIA FETCH
             try {
                 await fetch(GOOGLE_SHEET_SCRIPT_URL, {
                     method: 'POST',
@@ -550,7 +579,7 @@
                     body: JSON.stringify(orderData)
                 });
             } catch (err) {
-                console.log("GS Network Sync:", err);
+                console.log("GS Network Sync Notice:", err);
             }
 
             orders.unshift(orderData);
@@ -566,9 +595,10 @@
             btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>Konfirmasi & Kirim Pesanan</span>`;
             closeCheckoutModal();
 
-            alert(`✅ Pesanan Berhasil Terkirim!\nID Pesanan: ${orderData.orderId}\nData tersimpan aman di Google Spreadsheet MWC Palu Selatan.`);
+            alert(`✅ Pesanan Berhasil Terkirim!\nID Pesanan: ${orderData.orderId}\nData telah tersimpan di Google Spreadsheet MWC Palu Selatan.`);
         }
 
+        // UNGGAH PRODUK BARU DENGAN GENERATE ID OTOMATIS
         function toggleUploadModal() {
             document.getElementById('uploadModal').classList.toggle('hidden');
         }
@@ -578,14 +608,25 @@
             const fileInput = document.getElementById('newProdImg');
             const file = fileInput.files[0];
 
-            if (!file) return;
+            if (!file) {
+                alert('Pilih berkas foto produk terlebih dahulu.');
+                return;
+            }
+
+            const btnSubmit = document.getElementById('btnUploadSubmit');
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Memproses Foto...</span>`;
 
             const reader = new FileReader();
             reader.onload = function(evt) {
+                const categorySelected = document.getElementById('newProdCat').value;
+                const autoCode = generateProductCode(categorySelected);
+
                 const newProd = {
                     id: Date.now(),
+                    code: autoCode,
                     name: sanitizeHTML(document.getElementById('newProdName').value),
-                    category: document.getElementById('newProdCat').value,
+                    category: categorySelected,
                     price: Number(document.getElementById('newProdPrice').value),
                     stock: Number(document.getElementById('newProdStock').value),
                     desc: sanitizeHTML(document.getElementById('newProdDesc').value),
@@ -594,13 +635,32 @@
 
                 products.unshift(newProd);
                 localStorage.setItem('app_mwc_products', JSON.stringify(products));
+                
+                document.getElementById('uploadProductForm').reset();
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = `Tampilkan Produk`;
+
                 renderProducts();
                 toggleUploadModal();
-                alert('Produk baru berhasil ditambahkan ke E-Katalog!');
+                alert(`✅ Produk Berhasil Diunggah!\nKode Produk ID: ${autoCode}`);
             };
+
             reader.readAsDataURL(file);
         }
 
+        // HAPUS PRODUK
+        function deleteProduct(id) {
+            const prod = products.find(p => p.id === id);
+            if (!prod) return;
+
+            if (confirm(`Hapus produk "${prod.name}" [ID: ${prod.code || '-'}] dari E-Katalog?`)) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('app_mwc_products', JSON.stringify(products));
+                renderProducts();
+            }
+        }
+
+        // STATUS INDIKATOR LAMPU MERAH / HIJAU
         function updateStatusIndicator() {
             const dot = document.getElementById('statusIndicatorDot');
             const adminDot = document.getElementById('adminStatusLight');
@@ -615,6 +675,7 @@
             }
         }
 
+        // DASHBOARD ADMIN & PIN
         function openAdminModal() {
             document.getElementById('adminModal').classList.remove('hidden');
             if (sessionStorage.getItem('app_admin_authed') === 'true') {
@@ -667,7 +728,7 @@
                         <div class="text-slate-600 space-y-0.5">
                             <p><strong>Pembeli:</strong> ${o.nama} (${phoneDisplay})</p>
                             <p><strong>Alamat:</strong> ${addressDisplay}</p>
-                            <p><strong>Total:</strong> Rp ${o.total.toLocaleString('id-ID')}</p>
+                            <p><strong>Total:</strong> Rp ${Number(o.total).toLocaleString('id-ID')}</p>
                         </div>
                         <div class="flex space-x-2 pt-1">
                             ${o.status === 'Baru' ? `<button onclick="markOrderDone(${index})" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold">Tandai Selesai</button>` : ''}
