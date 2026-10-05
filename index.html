@@ -59,6 +59,12 @@
 
             <!-- Action Buttons -->
             <div class="flex items-center space-x-3">
+                <!-- Sync Button -->
+                <button onclick="fetchSpreadsheetProducts(true)" title="Sinkronkan dengan Spreadsheet" class="bg-emerald-800/80 hover:bg-emerald-900 px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1 border border-emerald-500/40">
+                    <i class="fa-solid fa-rotate text-emerald-300"></i>
+                    <span class="hidden sm:inline">Sync Data</span>
+                </button>
+
                 <!-- Admin Button -->
                 <button onclick="openAdminModal()" class="flex items-center space-x-2 bg-brand-teal-dark hover:bg-emerald-900 px-3.5 py-2 rounded-xl text-sm font-semibold transition border border-emerald-600/50">
                     <span id="statusIndicatorDot" class="w-3 h-3 rounded-full bg-emerald-400"></span>
@@ -79,11 +85,11 @@
     <section class="bg-gradient-to-r from-brand-teal via-emerald-800 to-brand-teal-dark text-white py-8 px-4 shadow-lg">
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-2xl sm:text-4xl font-extrabold mb-2">MWC PALU SELATAN E-Katalog</h2>
-            <p class="text-emerald-100 text-sm sm:text-base mb-6">Pilih produk, masukkan ke keranjang, dan upload bukti transfer secara instan & aman.</p>
+            <p class="text-emerald-100 text-sm sm:text-base mb-6">Pilih produk berkualitas, masukkan ke keranjang, dan kirim pesanan secara aman.</p>
             
             <!-- Search Bar -->
             <div class="relative max-w-xl mx-auto">
-                <input type="text" id="searchInput" oninput="renderProducts()" placeholder="Cari nama, ID Kode, atau deskripsi produk..." class="w-full pl-11 pr-4 py-3 rounded-2xl text-slate-800 focus:outline-none focus:ring-4 focus:ring-brand-amber shadow-xl font-medium">
+                <input type="text" id="searchInput" oninput="renderProducts()" placeholder="Cari nama, ID Kode (P.001), atau deskripsi..." class="w-full pl-11 pr-4 py-3 rounded-2xl text-slate-800 focus:outline-none focus:ring-4 focus:ring-brand-amber shadow-xl font-medium">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-lg"></i>
             </div>
         </div>
@@ -94,26 +100,22 @@
         
         <!-- TOOLBAR: FILTER KATEGORI -->
         <div class="mb-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-2 overflow-x-auto w-full pb-2 md:pb-0 custom-scroll">
-                <button onclick="filterCategory('All')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-brand-teal text-white whitespace-nowrap shadow-sm">Semua</button>
-                <button onclick="filterCategory('Pakaian')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Pakaian (P)</button>
-                <button onclick="filterCategory('Kuliner')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Kuliner (M)</button>
-                <button onclick="filterCategory('Aksesoris')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Aksesoris (A)</button>
-                <button onclick="filterCategory('Umum')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Umum (U)</button>
+            <div id="categoryContainer" class="flex items-center space-x-2 overflow-x-auto w-full pb-2 md:pb-0 custom-scroll">
+                <button onclick="filterCategory('All')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-brand-teal text-white whitespace-nowrap shadow-sm">Semua Produk</button>
+                <!-- Categories will render dynamically -->
             </div>
         </div>
 
-        <!-- KATALOG PRODUK GRID (PUBLIC VIEW) -->
+        <!-- KATALOG PRODUK GRID -->
         <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Dynamic Public Products -->
+            <!-- Dynamic Spreadsheet Products -->
         </div>
     </main>
 
     <!-- FOOTER -->
     <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs sm:text-sm mt-12 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4">
-            <p>© 2026 MWC PALU SELATAN E-Katalog. Hak Cipta Dilindungi.</p>
-            <p class="text-slate-500 mt-1">Terintegrasi Google Apps Script & GitHub Pages | Sistem Proteksi & Kompresi Berkas</p>
+            <p>© 2026 MWC PALU SELATAN E-Katalog. Terintegrasi Langsung Google Spreadsheet & Drive.</p>
         </div>
     </footer>
 
@@ -135,7 +137,7 @@
             
             <div id="chatLogs" class="p-3 flex-grow overflow-y-auto space-y-3 text-xs custom-scroll bg-slate-50">
                 <div class="bg-emerald-100 text-teal-900 p-2.5 rounded-2xl max-w-[85%] rounded-tl-none">
-                    Selamat datang di MWC PALU SELATAN E-Katalog! Ada yang bisa kami bantu mengenai produk atau cara pembayaran? 😊
+                    Selamat datang di MWC PALU SELATAN E-Katalog! Produk di etalase terhubung langsung secara terintegrasi dengan data toko kami. 😊
                 </div>
             </div>
 
@@ -189,7 +191,7 @@
             <form id="checkoutForm" onsubmit="submitOrder(event)" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold text-slate-600 uppercase mb-1">Nama Lengkap</label>
-                    <input type="text" id="custName" required placeholder="Contoh: Ahmad Subagja" class="w-full p-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-teal focus:outline-none">
+                    <input type="text" id="custName" required placeholder="Contoh: Budi Santoso" class="w-full p-3 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-brand-teal focus:outline-none">
                 </div>
                 <div>
                     <label class="block font-bold text-slate-600 uppercase mb-1">Nomor WhatsApp / HP</label>
@@ -207,7 +209,6 @@
                         <span>Instruksi Pembayaran</span>
                     </h4>
                     
-                    <!-- Bank BSI Card -->
                     <div class="bg-white p-3 rounded-xl border border-slate-200 flex justify-between items-center shadow-sm">
                         <div>
                             <p class="font-bold text-slate-800">Bank Syariah Indonesia (BSI)</p>
@@ -219,7 +220,6 @@
                         </button>
                     </div>
 
-                    <!-- QRIS Box -->
                     <div class="bg-white p-3 rounded-xl border border-slate-200 text-center space-y-2 shadow-sm">
                         <p class="font-bold text-slate-800">QRIS All Payment</p>
                         <div class="w-32 h-32 mx-auto bg-slate-100 rounded-lg p-2 border flex items-center justify-center">
@@ -256,57 +256,10 @@
         </div>
     </div>
 
-    <!-- MODAL UNGGAH & EDIT PRODUK (ADMIN ONLY) -->
-    <div id="productModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-lg text-slate-800" id="productModalTitle">Tambah Produk Baru</h3>
-                <button onclick="toggleProductModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
-            </div>
-            <form id="productForm" onsubmit="handleSaveProduct(event)" class="space-y-3 text-xs">
-                <input type="hidden" id="editProductId">
-                <div>
-                    <label class="block font-bold text-slate-600 mb-1">Pilih Foto Produk</label>
-                    <input type="file" id="prodImgInput" accept="image/*" class="w-full p-2 border border-slate-300 rounded-xl">
-                    <p class="text-[10px] text-slate-400 mt-0.5">Biarkan kosong jika tidak ingin mengubah foto saat mengedit.</p>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-600 mb-1">Nama Produk</label>
-                    <input type="text" id="prodNameInput" required placeholder="Contoh: Kemeja Batik MWC" class="w-full p-2.5 border border-slate-300 rounded-xl focus:outline-none">
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block font-bold text-slate-600 mb-1">Kategori (ID Kode)</label>
-                        <select id="prodCatInput" class="w-full p-2.5 border border-slate-300 rounded-xl font-medium">
-                            <option value="Pakaian">Pakaian (P-)</option>
-                            <option value="Kuliner">Kuliner (M-)</option>
-                            <option value="Aksesoris">Aksesoris (A-)</option>
-                            <option value="Umum">Umum (U-)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-600 mb-1">Stok Awal</label>
-                        <input type="number" id="prodStockInput" min="0" value="10" required class="w-full p-2.5 border border-slate-300 rounded-xl">
-                    </div>
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-600 mb-1">Harga (Rp)</label>
-                    <input type="number" id="prodPriceInput" required min="1000" placeholder="150000" class="w-full p-2.5 border border-slate-300 rounded-xl focus:outline-none">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-600 mb-1">Deskripsi Singkat</label>
-                    <textarea id="prodDescInput" required rows="2" placeholder="Deskripsi produk..." class="w-full p-2.5 border border-slate-300 rounded-xl focus:outline-none"></textarea>
-                </div>
-                <button type="submit" id="btnSaveProduct" class="w-full bg-brand-teal hover:bg-brand-teal-dark text-white font-bold py-3 rounded-xl transition shadow">Simpan Produk</button>
-            </form>
-        </div>
-    </div>
-
     <!-- MODAL DASHBOARD ADMIN & PIN -->
     <div id="adminModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl max-w-3xl w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] flex flex-col">
             
-            <!-- Auth Screen -->
             <div id="adminAuthScreen" class="py-8 text-center space-y-4">
                 <div class="w-16 h-16 bg-emerald-100 text-brand-teal rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
                     <i class="fa-solid fa-lock"></i>
@@ -320,17 +273,13 @@
                 <button onclick="closeAdminModal()" class="text-xs text-slate-400 hover:text-slate-600 block mx-auto mt-4">Batal</button>
             </div>
 
-            <!-- Panel Screen (After Auth) -->
             <div id="adminPanelScreen" class="hidden flex-col h-full overflow-hidden">
                 <div class="flex justify-between items-center pb-3 border-b border-slate-200">
                     <div class="flex items-center space-x-2">
                         <span id="adminStatusLight" class="w-3.5 h-3.5 rounded-full bg-emerald-500"></span>
-                        <h3 class="font-bold text-lg text-slate-800">Dashboard Manajemen Toko</h3>
+                        <h3 class="font-bold text-lg text-slate-800">Dashboard Pesanan Masuk</h3>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button onclick="openProductModalForCreate()" class="text-xs bg-brand-amber text-slate-900 font-bold px-3 py-1.5 rounded-lg hover:bg-amber-500 shadow">
-                            <i class="fa-solid fa-plus-circle"></i> Tambah Produk
-                        </button>
                         <button onclick="toggleDataMasking()" class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1.5 rounded-lg border hover:bg-slate-200">
                             <i class="fa-solid fa-eye"></i> Masking
                         </button>
@@ -338,20 +287,8 @@
                     </div>
                 </div>
 
-                <!-- TAB SWITCHER ADMIN -->
-                <div class="flex border-b border-slate-200 my-3 text-xs font-bold">
-                    <button onclick="switchAdminTab('orders')" id="tabBtnOrders" class="px-4 py-2 text-brand-teal border-b-2 border-brand-teal">Daftar Pesanan Masuk</button>
-                    <button onclick="switchAdminTab('products')" id="tabBtnProducts" class="px-4 py-2 text-slate-400 hover:text-slate-600">Kelola Produk Katalog</button>
-                </div>
-
-                <!-- TAB CONTENT 1: DAFTAR PESANAN -->
-                <div id="adminTabOrders" class="py-2 overflow-y-auto space-y-3 flex-grow text-xs custom-scroll">
+                <div id="adminTabOrders" class="py-4 overflow-y-auto space-y-3 flex-grow text-xs custom-scroll">
                     <!-- Dynamic Admin Orders -->
-                </div>
-
-                <!-- TAB CONTENT 2: KELOLA PRODUK -->
-                <div id="adminTabProducts" class="hidden py-2 overflow-y-auto space-y-3 flex-grow text-xs custom-scroll">
-                    <!-- Dynamic Admin Products List -->
                 </div>
 
                 <div class="pt-3 border-t border-slate-200 flex justify-between items-center text-xs">
@@ -375,12 +312,34 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT LOGIC & SPREADSHEET AUTO-SYNC -->
     <script>
-        const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwRqYiNIeR4hY6JF4ixo-2rGOqcX9IyFvMLEzg33tUdx1Jfci5HowaMIP_9NYsVKibIA/exec";
+        const SPREADSHEET_ID = "1nGqZ1oaVMpjUXAldmTjtWsFtyvtjUjHtFl0GeSP-wlA";
+        const SPREADSHEET_JSON_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Produk`;
+        const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoGRiECidJFhNFp3ATZEu-ur4KqiRWNZWjEwVQ3PZUzgLnB_X_xDdZfyJlgJJjQchgg/exec";
 
-        // INIT STATE
-        let products = JSON.parse(localStorage.getItem('app_mwc_products')) || [];
+        // MASTER DEFAULT PRODUCTS DARI SPREADSHEET (FALLBACK OFFLINE REAL DATA)
+        const SPREADSHEET_DEFAULT_PRODUCTS = [
+            { id: "P.001", code: "P.001", name: "Setangkai Bunga", category: "Bucket", price: 15000, stock: 2, desc: "Gift Bunga Cantik", img: "https://lh3.googleusercontent.com/d/1ZlOSmLwcpQ2kRFQWi7SUMzYjva29S8fY" },
+            { id: "P.002", code: "P.002", name: "Bunga Kuning", category: "Bucket", price: 40000, stock: 6, desc: "Gift Bunga Cantik", img: "https://lh3.googleusercontent.com/d/1rUhauQntUWcKQmfn8UWsr-2pMPRhYmvn" },
+            { id: "P.003", code: "P.003", name: "Bunga Ungu", category: "Bucket", price: 40000, stock: 6, desc: "Gift Bunga Cantik", img: "https://lh3.googleusercontent.com/d/11EOQ-EeplSGlG7Bge025M8GJbVM2qP_T" },
+            { id: "P.004", code: "P.004", name: "Bunga Biru", category: "Bucket", price: 40000, stock: 5, desc: "Gift Bunga Cantik", img: "https://lh3.googleusercontent.com/d/1q71XMYRtZH-OebdT0ic0GbRILvis07RD" },
+            { id: "P.005", code: "P.005", name: "Setangkai Bunga", category: "Bucket", price: 25000, stock: 6, desc: "Gift Bunga Cantik", img: "https://lh3.googleusercontent.com/d/1QuanWoAaehMDnC_qSRGxlYoHmcg6kv8e" },
+            { id: "P.006", code: "P.006", name: "Set Bunga Kuning", category: "Bucket", price: 20000, stock: 4, desc: "Pot dan Bunga Cantik", img: "https://lh3.googleusercontent.com/d/1IbKVGVE841FDli46JoU8A8578Cqsbe7G" },
+            { id: "P.007", code: "P.007", name: "Set Bunga Ungu", category: "Bucket", price: 20000, stock: 6, desc: "Pot dan Bunga Cantik", img: "https://lh3.googleusercontent.com/d/1-Y7LEOVeM9q2ydqnj1kLqkDOjXUj9qV3" },
+            { id: "P.008", code: "P.008", name: "Set Bunga Merah", category: "Bucket", price: 20000, stock: 3, desc: "Pot dan Bunga Cantik", img: "https://lh3.googleusercontent.com/d/1bZbkMUdqWhI1vg-lEtfsWZuA75TaUolw" },
+            { id: "P.009", code: "P.009", name: "Set Bunga Ungu", category: "Bucket", price: 40000, stock: 4, desc: "Pot dan Bunga Besar", img: "https://lh3.googleusercontent.com/d/1uYeeZv4Fh5C_xmFCaLZIkCpLuEqttMA-" },
+            { id: "P.010", code: "P.010", name: "Set Bunga Ungu pjg", category: "Bucket", price: 20000, stock: 7, desc: "Pot dan Bunga Cantik", img: "https://lh3.googleusercontent.com/d/19KNTKqJRMcu9Eq_rvxtqx9aDIL5sUuif" },
+            { id: "P.011", code: "P.011", name: "Rak telur mini", category: "Wadah", price: 10000, stock: 2, desc: "Muat 6 Butir Telur", img: "https://lh3.googleusercontent.com/d/1xUuZuS2ZxURdutYcNq6x_Ce8BTWPOq5f" },
+            { id: "P.012", code: "P.012", name: "Roti Bakar Asin", category: "Makanan", price: 20000, stock: 10, desc: "Toping Gurih Lezat", img: "https://lh3.googleusercontent.com/d/1MTozXbJFyChXiTCVPsRHydco9JgX5oV1" },
+            { id: "P.013", code: "P.013", name: "Tas Imut", category: "Tas", price: 10000, stock: 7, desc: "Motif Strawberry", img: "https://lh3.googleusercontent.com/d/1xkh2SSDeywfuK3vzdnjcyaPUn7UKhAS8" },
+            { id: "P.014", code: "P.014", name: "Hiasan Bunga", category: "Hiasan", price: 20000, stock: 2, desc: "Gift Bunga Cantik", img: "https://lh3.googleusercontent.com/d/1npbDmSi8Sz-1rGhc4bL0g_aGnL-UX7Fy" }
+        ];
+
+        // INIT STATE WITH SPREADSHEET DATA
+        let products = SPREADSHEET_DEFAULT_PRODUCTS;
+        localStorage.setItem('app_mwc_products', JSON.stringify(products));
+
         let cart = JSON.parse(localStorage.getItem('app_cart')) || [];
         let orders = JSON.parse(localStorage.getItem('app_orders')) || [];
         let activeCategory = 'All';
@@ -395,38 +354,61 @@
             });
         }
 
-        // GENERATE KODE ID OTOMATIS
-        function generateProductCode(category, index) {
-            let prefix = "U";
-            if (category === "Pakaian") prefix = "P";
-            else if (category === "Kuliner") prefix = "M";
-            else if (category === "Aksesoris") prefix = "A";
-
-            const idx = index !== undefined ? index : (products.filter(p => p.category === category).length + 1);
-            return `${prefix}-${String(idx).padStart(3, '0')}`;
+        // CONVERT GOOGLE DRIVE URL TO DIRECT IMAGE STREAM
+        function convertDriveUrl(url) {
+            if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+            if (url.includes('drive.google.com')) {
+                const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (match && match[1]) {
+                    return `https://lh3.googleusercontent.com/d/${match[1]}`;
+                }
+            }
+            return url;
         }
 
-        // AUTO MIGRATION SCRIPT
-        function fixMissingProductCodes() {
-            let updated = false;
-            const counts = {};
+        // FETCH REALTIME DATA FROM SPREADSHEET
+        async function fetchSpreadsheetProducts(manualTrigger = false) {
+            try {
+                const res = await fetch(SPREADSHEET_JSON_URL);
+                const text = await res.text();
+                const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const data = JSON.parse(jsonText);
 
-            products.forEach(p => {
-                p.id = String(p.id);
-                if (!p.code) {
-                    const cat = p.category || "Umum";
-                    counts[cat] = (counts[cat] || 0) + 1;
-                    p.code = generateProductCode(cat, counts[cat]);
-                    updated = true;
+                const rows = data.table.rows;
+                const fetchedProducts = [];
+
+                rows.forEach((row, idx) => {
+                    if (!row.c || !row.c[0] || !row.c[0].v) return;
+                    const code = String(row.c[0].v).trim();
+                    const name = row.c[1] ? String(row.c[1].v).trim() : 'Produk';
+                    const category = row.c[2] ? String(row.c[2].v).trim() : 'Umum';
+                    
+                    let priceRaw = row.c[3] ? String(row.c[3].v) : '0';
+                    let price = Number(priceRaw.replace(/[^0-9]/g, '')) || 0;
+
+                    let stock = row.c[4] ? Number(row.c[4].v) || 5 : 5;
+                    let desc = row.c[5] ? String(row.c[5].v).trim() : 'Produk Pilihan';
+                    let rawUrl = row.c[6] ? String(row.c[6].v).trim() : '';
+                    let img = convertDriveUrl(rawUrl);
+
+                    fetchedProducts.push({ id: code, code, name, category, price, stock, desc, img });
+                });
+
+                if (fetchedProducts.length > 0) {
+                    products = fetchedProducts;
+                    localStorage.setItem('app_mwc_products', JSON.stringify(products));
+                    renderCategories();
+                    renderProducts();
+                    if (manualTrigger) alert('✅ Data produk berhasil disinkronkan langsung dari Spreadsheet Google!');
                 }
-            });
-
-            if (updated) {
-                localStorage.setItem('app_mwc_products', JSON.stringify(products));
+            } catch (e) {
+                console.log("Spreadsheet Fetch Fallback:", e);
+                renderCategories();
+                renderProducts();
             }
         }
 
-        // KOMPRESI GAMBAR AUTOMATIS (CANVAS RESIZER)
+        // KOMPRESI GAMBAR AUTOMATIS
         function compressImage(file, maxWidth, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -455,13 +437,26 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            fixMissingProductCodes();
-            renderProducts();
+            fetchSpreadsheetProducts();
             updateCartUI();
             updateStatusIndicator();
         });
 
-        // RENDER KATALOG PUBLIC VIEW (TANPA TOMBOL EDIT/HAPUS)
+        // RENDER KATEGORI DINAMIS
+        function renderCategories() {
+            const container = document.getElementById('categoryContainer');
+            const categories = ['All', ...new Set(products.map(p => p.category))];
+            
+            container.innerHTML = `<button onclick="filterCategory('All')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-brand-teal text-white whitespace-nowrap shadow-sm">Semua Produk</button>`;
+            
+            categories.filter(c => c !== 'All').forEach(cat => {
+                container.innerHTML += `
+                    <button onclick="filterCategory('${cat}')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">${sanitizeHTML(cat)}</button>
+                `;
+            });
+        }
+
+        // RENDER KATALOG PUBLIC VIEW
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             const searchQuery = (document.getElementById('searchInput').value || '').toLowerCase();
@@ -481,8 +476,8 @@
                         <div class="w-16 h-16 bg-emerald-50 text-brand-teal rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">
                             <i class="fa-solid fa-box-open"></i>
                         </div>
-                        <h3 class="font-bold text-slate-700 text-base mb-1">Katalog Produk Masih Kosong</h3>
-                        <p class="text-xs text-slate-400">Silakan hubungi Pengelola MWC Palu Selatan untuk update barang.</p>
+                        <h3 class="font-bold text-slate-700 text-base mb-1">Produk Tidak Ditemukan</h3>
+                        <p class="text-xs text-slate-400">Coba kata kunci pencarian lain atau pilih kategori Semua Produk.</p>
                     </div>`;
                 return;
             }
@@ -491,9 +486,9 @@
                 const isOutOfStock = Number(p.stock) <= 0;
                 const stockBadge = isOutOfStock 
                     ? `<span class="bg-rose-100 text-rose-600 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Stok Habis</span>`
-                    : (Number(p.stock) <= 5 
-                        ? `<span class="bg-amber-100 text-amber-700 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Sisa ${p.stock}</span>`
-                        : `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Stok: ${p.stock}</span>`);
+                    : (Number(p.stock) <= 3 
+                        ? `<span class="bg-amber-100 text-amber-700 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Stok Tipis (${p.stock})</span>`
+                        : `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Tersedia (${p.stock})</span>`);
 
                 grid.innerHTML += `
                     <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition flex flex-col justify-between">
@@ -502,12 +497,12 @@
                                 <img src="${p.img}" alt="${sanitizeHTML(p.name)}" class="w-full h-full object-cover">
                                 <div class="absolute top-3 right-3">${stockBadge}</div>
                                 <span class="absolute top-3 left-3 bg-brand-teal text-white text-[11px] font-black px-2.5 py-1 rounded-lg shadow-md border border-emerald-400/30">
-                                    [${p.code || 'PROD'}] ${sanitizeHTML(p.category)}
+                                    [${p.code}] ${sanitizeHTML(p.category)}
                                 </span>
                             </div>
                             <div class="p-4">
                                 <h3 class="font-bold text-slate-800 text-base line-clamp-1 mb-1">${sanitizeHTML(p.name)}</h3>
-                                <p class="text-[11px] font-bold text-brand-teal mb-1.5"><i class="fa-solid fa-barcode mr-1"></i> ID Kode: ${p.code || '-'}</p>
+                                <p class="text-[11px] font-bold text-brand-teal mb-1.5"><i class="fa-solid fa-barcode mr-1"></i> ID Kode: ${p.code}</p>
                                 <p class="text-xs text-slate-500 line-clamp-2 mb-3">${sanitizeHTML(p.desc)}</p>
                             </div>
                         </div>
@@ -655,7 +650,6 @@
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Mengompres & Mengirim...</span>`;
 
-            // Compress Payment Proof Image
             compressImage(file, 600, 0.7, async function(compressedProofBase64) {
                 const orderData = {
                     orderId: "MWC-" + Date.now(),
@@ -670,7 +664,7 @@
                     status: "Baru"
                 };
 
-                // Deduct Product Stock
+                // Deduct Stock
                 cart.forEach(cartItem => {
                     const prod = products.find(p => String(p.id) === String(cartItem.id));
                     if (prod) prod.stock = Math.max(0, Number(prod.stock) - cartItem.qty);
@@ -707,101 +701,7 @@
             });
         }
 
-        // MANAGEMENT PRODUK ADMIN (TAMBAH / EDIT / HAPUS)
-        function openProductModalForCreate() {
-            document.getElementById('editProductId').value = '';
-            document.getElementById('productModalTitle').innerText = 'Tambah Produk Baru';
-            document.getElementById('productForm').reset();
-            document.getElementById('productModal').classList.remove('hidden');
-        }
-
-        function openProductModalForEdit(id) {
-            const prod = products.find(p => String(p.id) === String(id));
-            if (!prod) return;
-
-            document.getElementById('editProductId').value = prod.id;
-            document.getElementById('productModalTitle').innerText = `Edit Produk [${prod.code}]`;
-            document.getElementById('prodNameInput').value = prod.name;
-            document.getElementById('prodCatInput').value = prod.category;
-            document.getElementById('prodStockInput').value = prod.stock;
-            document.getElementById('prodPriceInput').value = prod.price;
-            document.getElementById('prodDescInput').value = prod.desc;
-            document.getElementById('productModal').classList.remove('hidden');
-        }
-
-        function toggleProductModal() {
-            document.getElementById('productModal').classList.toggle('hidden');
-        }
-
-        function handleSaveProduct(e) {
-            e.preventDefault();
-            const editId = document.getElementById('editProductId').value;
-            const fileInput = document.getElementById('prodImgInput');
-            const file = fileInput.files[0];
-            const btn = document.getElementById('btnSaveProduct');
-
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Menyimpan...</span>`;
-
-            const catSelected = document.getElementById('prodCatInput').value;
-
-            const saveProcess = (imgBase64) => {
-                if (editId) {
-                    // EDIT EXISTING PRODUCT
-                    const prodIndex = products.findIndex(p => String(p.id) === String(editId));
-                    if (prodIndex !== -1) {
-                        products[prodIndex].name = sanitizeHTML(document.getElementById('prodNameInput').value);
-                        products[prodIndex].category = catSelected;
-                        products[prodIndex].stock = Number(document.getElementById('prodStockInput').value);
-                        products[prodIndex].price = Number(document.getElementById('prodPriceInput').value);
-                        products[prodIndex].desc = sanitizeHTML(document.getElementById('prodDescInput').value);
-                        if (imgBase64) products[prodIndex].img = imgBase64;
-                    }
-                } else {
-                    // CREATE NEW PRODUCT
-                    const autoCode = generateProductCode(catSelected);
-                    const newProd = {
-                        id: String(Date.now()),
-                        code: autoCode,
-                        name: sanitizeHTML(document.getElementById('prodNameInput').value),
-                        category: catSelected,
-                        price: Number(document.getElementById('prodPriceInput').value),
-                        stock: Number(document.getElementById('prodStockInput').value),
-                        desc: sanitizeHTML(document.getElementById('prodDescInput').value),
-                        img: imgBase64 || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"
-                    };
-                    products.unshift(newProd);
-                }
-
-                localStorage.setItem('app_mwc_products', JSON.stringify(products));
-                btn.disabled = false;
-                btn.innerHTML = `Simpan Produk`;
-                toggleProductModal();
-                renderProducts();
-                renderAdminProducts();
-                alert('✅ Data produk berhasil disimpan!');
-            };
-
-            if (file) {
-                compressImage(file, 600, 0.7, saveProcess);
-            } else {
-                saveProcess(null);
-            }
-        }
-
-        function deleteProduct(id) {
-            const prod = products.find(p => String(p.id) === String(id));
-            if (!prod) return;
-
-            if (confirm(`Hapus produk "${prod.name}" [ID: ${prod.code || '-'}] secara permanen?`)) {
-                products = products.filter(p => String(p.id) !== String(id));
-                localStorage.setItem('app_mwc_products', JSON.stringify(products));
-                renderProducts();
-                renderAdminProducts();
-            }
-        }
-
-        // DASHBOARD ADMIN TABS & PIN
+        // DASHBOARD ADMIN & PIN
         function updateStatusIndicator() {
             const dot = document.getElementById('statusIndicatorDot');
             const adminDot = document.getElementById('adminStatusLight');
@@ -844,26 +744,6 @@
             document.getElementById('adminAuthScreen').classList.add('hidden');
             document.getElementById('adminPanelScreen').classList.remove('hidden');
             renderAdminOrders();
-            renderAdminProducts();
-        }
-
-        function switchAdminTab(tab) {
-            const tabOrders = document.getElementById('adminTabOrders');
-            const tabProducts = document.getElementById('adminTabProducts');
-            const btnOrders = document.getElementById('tabBtnOrders');
-            const btnProducts = document.getElementById('tabBtnProducts');
-
-            if (tab === 'orders') {
-                tabOrders.classList.remove('hidden');
-                tabProducts.classList.add('hidden');
-                btnOrders.className = "px-4 py-2 text-brand-teal border-b-2 border-brand-teal";
-                btnProducts.className = "px-4 py-2 text-slate-400 hover:text-slate-600";
-            } else {
-                tabOrders.classList.add('hidden');
-                tabProducts.classList.remove('hidden');
-                btnProducts.className = "px-4 py-2 text-brand-teal border-b-2 border-brand-teal";
-                btnOrders.className = "px-4 py-2 text-slate-400 hover:text-slate-600";
-            }
         }
 
         function renderAdminOrders() {
@@ -897,39 +777,6 @@
                         <div class="flex space-x-2 pt-1">
                             ${o.status === 'Baru' ? `<button onclick="markOrderDone(${index})" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold">Tandai Selesai</button>` : ''}
                             <button onclick="deleteOrder(${index})" class="bg-brand-coral text-white px-2.5 py-1 rounded-lg text-[10px] font-bold">Hapus</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function renderAdminProducts() {
-            const list = document.getElementById('adminTabProducts');
-            list.innerHTML = '';
-
-            if (products.length === 0) {
-                list.innerHTML = `<p class="text-center text-slate-400 py-8">Katalog produk masih kosong.</p>`;
-                return;
-            }
-
-            products.forEach(p => {
-                list.innerHTML += `
-                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <img src="${p.img}" class="w-12 h-12 rounded-xl object-cover">
-                            <div>
-                                <span class="bg-emerald-100 text-brand-teal font-extrabold px-1.5 py-0.5 rounded text-[10px]">[${p.code}]</span>
-                                <h4 class="font-bold text-slate-800 text-xs">${sanitizeHTML(p.name)}</h4>
-                                <p class="text-slate-500 text-[10px]">Stok: ${p.stock} | Rp ${Number(p.price).toLocaleString('id-ID')}</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-1.5">
-                            <button onclick="openProductModalForEdit('${p.id}')" class="bg-amber-100 hover:bg-amber-200 text-amber-800 px-2.5 py-1.5 rounded-lg text-[10px] font-bold">
-                                <i class="fa-solid fa-pen"></i> Edit
-                            </button>
-                            <button onclick="deleteProduct('${p.id}')" class="bg-rose-100 hover:bg-rose-200 text-rose-600 px-2.5 py-1.5 rounded-lg text-[10px] font-bold">
-                                <i class="fa-solid fa-trash-can"></i> Hapus
-                            </button>
                         </div>
                     </div>
                 `;
