@@ -43,8 +43,8 @@
 </head>
 <body class="bg-brand-light text-slate-800 flex flex-col min-h-screen">
 
-    <!-- HEADER / NAVBAR -->
-    <header class="sticky top-0 z-30 bg-brand-teal text-white shadow-md">
+    <!-- HEADER / NAVBAR (Dibuat Non-Sticky / Tidak Melayang saat Scroll di HP) -->
+    <header class="relative bg-brand-teal text-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
             <!-- Logo & Brand Name -->
             <div class="flex items-center space-x-3">
@@ -58,24 +58,24 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 sm:space-x-3">
                 <!-- Sync Button -->
-                <button onclick="fetchSpreadsheetProducts(true)" title="Sinkronkan dengan Spreadsheet" class="bg-emerald-800/80 hover:bg-emerald-900 px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1 border border-emerald-500/40">
+                <button onclick="fetchSpreadsheetProducts(true)" title="Sinkronkan Data" class="bg-emerald-800/80 hover:bg-emerald-900 px-3 py-2 rounded-xl text-xs font-semibold flex items-center space-x-1 border border-emerald-500/40">
                     <i class="fa-solid fa-rotate text-emerald-300"></i>
                     <span class="hidden sm:inline">Sync Data</span>
                 </button>
 
                 <!-- Admin Button -->
-                <button onclick="openAdminModal()" class="flex items-center space-x-2 bg-brand-teal-dark hover:bg-emerald-900 px-3.5 py-2 rounded-xl text-sm font-semibold transition border border-emerald-600/50">
-                    <span id="statusIndicatorDot" class="w-3 h-3 rounded-full bg-emerald-400"></span>
+                <button onclick="openAdminModal()" class="flex items-center space-x-1.5 bg-brand-teal-dark hover:bg-emerald-900 px-3 py-2 rounded-xl text-xs font-semibold transition border border-emerald-600/50">
+                    <span id="statusIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
                     <span class="hidden md:inline">Dashboard Admin</span>
                 </button>
 
                 <!-- Cart Button -->
-                <button onclick="toggleCartDrawer()" class="relative bg-brand-amber hover:bg-amber-400 text-slate-900 font-bold px-4 py-2 rounded-xl flex items-center space-x-2 transition shadow-md">
+                <button onclick="toggleCartDrawer()" class="relative bg-brand-amber hover:bg-amber-400 text-slate-900 font-bold px-3.5 py-2 rounded-xl flex items-center space-x-2 transition shadow-md text-xs sm:text-sm">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span class="hidden sm:inline">Keranjang</span>
-                    <span id="cartBadge" class="bg-brand-coral text-white text-xs font-black px-2 py-0.5 rounded-full">0</span>
+                    <span id="cartBadge" class="bg-brand-coral text-white text-[11px] font-black px-2 py-0.5 rounded-full">0</span>
                 </button>
             </div>
         </div>
@@ -102,7 +102,6 @@
         <div class="mb-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
             <div id="categoryContainer" class="flex items-center space-x-2 overflow-x-auto w-full pb-2 md:pb-0 custom-scroll">
                 <button onclick="filterCategory('All')" class="category-btn px-4 py-2 rounded-xl text-sm font-semibold bg-brand-teal text-white whitespace-nowrap shadow-sm">Semua Produk</button>
-                <!-- Categories will render dynamically -->
             </div>
         </div>
 
@@ -137,7 +136,7 @@
             
             <div id="chatLogs" class="p-3 flex-grow overflow-y-auto space-y-3 text-xs custom-scroll bg-slate-50">
                 <div class="bg-emerald-100 text-teal-900 p-2.5 rounded-2xl max-w-[85%] rounded-tl-none">
-                    Selamat datang di MWC PALU SELATAN E-Katalog! Produk di etalase terhubung langsung secara terintegrasi dengan data toko kami. 😊
+                    Selamat datang di MWC PALU SELATAN E-Katalog! Ada yang bisa kami bantu mengenai produk atau cara pemesanan? 😊
                 </div>
             </div>
 
@@ -152,7 +151,7 @@
         </button>
     </div>
 
-    <!-- DRAWER KERANJANG BELANJA (OFFCANVAS) -->
+    <!-- DRAWER KERANJANG BELANJA & BATALKAN PESANAN -->
     <div id="cartDrawer" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden transition-opacity">
         <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between">
             <div class="p-4 bg-brand-teal text-white flex justify-between items-center">
@@ -172,11 +171,39 @@
                     <span>Total Belanja:</span>
                     <span id="cartTotal" class="text-xl font-extrabold text-brand-teal">Rp 0</span>
                 </div>
-                <button onclick="openCheckoutModal()" class="w-full bg-brand-teal hover:bg-brand-teal-dark text-white font-bold py-3 rounded-xl transition shadow-lg text-sm flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-credit-card"></i>
-                    <span>Lanjut ke Checkout</span>
-                </button>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="cancelCartWithReason()" class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold py-3 rounded-xl transition text-xs flex items-center justify-center space-x-1">
+                        <i class="fa-solid fa-ban"></i>
+                        <span>Batalkan Pesanan</span>
+                    </button>
+                    <button onclick="openCheckoutModal()" class="bg-brand-teal hover:bg-brand-teal-dark text-white font-bold py-3 rounded-xl transition shadow-lg text-xs flex items-center justify-center space-x-1">
+                        <i class="fa-solid fa-credit-card"></i>
+                        <span>Lanjut Checkout</span>
+                    </button>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL POPUP PREVIEW GAMBAR DETAIL -->
+    <div id="imageDetailModal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-4" onclick="closeImageDetail()">
+        <div class="max-w-xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl text-center space-y-3 p-4 relative" onclick="event.stopPropagation()">
+            <button onclick="closeImageDetail()" class="absolute top-3 right-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full w-9 h-9 flex items-center justify-center font-bold text-lg shadow z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="max-h-[65vh] overflow-hidden rounded-2xl bg-slate-100 flex items-center justify-center">
+                <img id="detailModalImg" src="" class="max-h-[65vh] w-auto object-contain">
+            </div>
+            <div class="text-left px-2">
+                <span id="detailModalCode" class="bg-brand-teal text-white font-extrabold text-[10px] px-2 py-0.5 rounded-md"></span>
+                <h3 id="detailModalTitle" class="font-extrabold text-slate-800 text-lg mt-1"></h3>
+                <p id="detailModalPrice" class="text-brand-teal font-extrabold text-base mb-1"></p>
+                <p id="detailModalDesc" class="text-xs text-slate-500 leading-relaxed"></p>
+            </div>
+            <button id="detailModalBuyBtn" class="bg-brand-teal hover:bg-brand-teal-dark text-white font-bold py-3 rounded-xl text-xs w-full shadow-md flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-cart-plus"></i>
+                <span>Masukkan ke Keranjang</span>
+            </button>
         </div>
     </div>
 
@@ -318,7 +345,7 @@
         const SPREADSHEET_JSON_URL = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Produk`;
         const GOOGLE_SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwVoGRiECidJFhNFp3ATZEu-ur4KqiRWNZWjEwVQ3PZUzgLnB_X_xDdZfyJlgJJjQchgg/exec";
 
-        // MASTER DEFAULT PRODUCTS DARI SPREADSHEET (FALLBACK OFFLINE REAL DATA)
+        // MASTER DEFAULT PRODUCTS DARI SPREADSHEET
         const SPREADSHEET_DEFAULT_PRODUCTS = [
             { id: "P.001", code: "P.001", name: "Setangkai Bunga", category: "Bucket", price: 15000, stock: 2, desc: "Gift Bunga Cantik", img: "https://lh3.googleusercontent.com/d/1ZlOSmLwcpQ2kRFQWi7SUMzYjva29S8fY" },
             { id: "P.002", code: "P.002", name: "Bunga Kuning", category: "Bucket", price: 40000, stock: 6, desc: "Gift Bunga Cantik", img: "https://lh3.googleusercontent.com/d/1rUhauQntUWcKQmfn8UWsr-2pMPRhYmvn" },
@@ -336,7 +363,6 @@
             { id: "P.014", code: "P.014", name: "Hiasan Bunga", category: "Hiasan", price: 20000, stock: 2, desc: "Gift Bunga Cantik", img: "https://lh3.googleusercontent.com/d/1npbDmSi8Sz-1rGhc4bL0g_aGnL-UX7Fy" }
         ];
 
-        // INIT STATE WITH SPREADSHEET DATA
         let products = SPREADSHEET_DEFAULT_PRODUCTS;
         localStorage.setItem('app_mwc_products', JSON.stringify(products));
 
@@ -346,7 +372,6 @@
         let adminPin = localStorage.getItem('app_admin_pin') || '123456';
         let isDataMasked = true;
 
-        // SANITIZE HTML
         function sanitizeHTML(str) {
             if (!str) return '';
             return String(str).replace(/[&<>"']/g, function(m) {
@@ -354,7 +379,6 @@
             });
         }
 
-        // CONVERT GOOGLE DRIVE URL TO DIRECT IMAGE STREAM
         function convertDriveUrl(url) {
             if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
             if (url.includes('drive.google.com')) {
@@ -366,7 +390,6 @@
             return url;
         }
 
-        // FETCH REALTIME DATA FROM SPREADSHEET
         async function fetchSpreadsheetProducts(manualTrigger = false) {
             try {
                 const res = await fetch(SPREADSHEET_JSON_URL);
@@ -399,7 +422,7 @@
                     localStorage.setItem('app_mwc_products', JSON.stringify(products));
                     renderCategories();
                     renderProducts();
-                    if (manualTrigger) alert('✅ Data produk berhasil disinkronkan langsung dari Spreadsheet Google!');
+                    if (manualTrigger) alert('✅ Data produk berhasil disinkronkan!');
                 }
             } catch (e) {
                 console.log("Spreadsheet Fetch Fallback:", e);
@@ -408,7 +431,6 @@
             }
         }
 
-        // KOMPRESI GAMBAR AUTOMATIS
         function compressImage(file, maxWidth, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -442,7 +464,6 @@
             updateStatusIndicator();
         });
 
-        // RENDER KATEGORI DINAMIS
         function renderCategories() {
             const container = document.getElementById('categoryContainer');
             const categories = ['All', ...new Set(products.map(p => p.category))];
@@ -456,7 +477,7 @@
             });
         }
 
-        // RENDER KATALOG PUBLIC VIEW
+        // RENDER KATALOG DENGAN FITUR KLIK GAMBAR UNTUK DETAIL PREVIEW
         function renderProducts() {
             const grid = document.getElementById('productGrid');
             const searchQuery = (document.getElementById('searchInput').value || '').toLowerCase();
@@ -485,20 +506,29 @@
             filtered.forEach(p => {
                 const isOutOfStock = Number(p.stock) <= 0;
                 const stockBadge = isOutOfStock 
-                    ? `<span class="bg-rose-100 text-rose-600 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Stok Habis</span>`
+                    ? `<span class="bg-rose-500/90 backdrop-blur-md text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg shadow-sm">Stok Habis</span>`
                     : (Number(p.stock) <= 3 
-                        ? `<span class="bg-amber-100 text-amber-700 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Stok Tipis (${p.stock})</span>`
-                        : `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full">Tersedia (${p.stock})</span>`);
+                        ? `<span class="bg-amber-500/90 backdrop-blur-md text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg shadow-sm">Stok Tipis (${p.stock})</span>`
+                        : `<span class="bg-emerald-600/90 backdrop-blur-md text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg shadow-sm">Tersedia (${p.stock})</span>`);
 
                 grid.innerHTML += `
                     <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-xl transition flex flex-col justify-between">
                         <div>
-                            <div class="relative h-48 bg-slate-100 overflow-hidden">
-                                <img src="${p.img}" alt="${sanitizeHTML(p.name)}" class="w-full h-full object-cover">
-                                <div class="absolute top-3 right-3">${stockBadge}</div>
-                                <span class="absolute top-3 left-3 bg-brand-teal text-white text-[11px] font-black px-2.5 py-1 rounded-lg shadow-md border border-emerald-400/30">
+                            <!-- Klik gambar untuk perbesar detail -->
+                            <div class="relative h-48 bg-slate-100 overflow-hidden cursor-pointer group" onclick="openImageDetail('${p.id}')">
+                                <img src="${p.img}" alt="${sanitizeHTML(p.name)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                                
+                                <span class="absolute top-3 left-3 bg-brand-teal text-white text-[10px] sm:text-[11px] font-black px-2.5 py-1 rounded-lg shadow-md border border-emerald-400/30">
                                     [${p.code}] ${sanitizeHTML(p.category)}
                                 </span>
+
+                                <div class="absolute bottom-3 right-3">
+                                    ${stockBadge}
+                                </div>
+                                <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-bold space-x-1">
+                                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                                    <span>Lihat Detail</span>
+                                </div>
                             </div>
                             <div class="p-4">
                                 <h3 class="font-bold text-slate-800 text-base line-clamp-1 mb-1">${sanitizeHTML(p.name)}</h3>
@@ -521,6 +551,39 @@
             });
         }
 
+        // BUKA PREVIEW DETAIL GAMBAR
+        function openImageDetail(id) {
+            const prod = products.find(p => String(p.id) === String(id));
+            if (!prod) return;
+
+            document.getElementById('detailModalImg').src = prod.img;
+            document.getElementById('detailModalCode').innerText = `[${prod.code}] ${prod.category}`;
+            document.getElementById('detailModalTitle').innerText = prod.name;
+            document.getElementById('detailModalPrice').innerText = `Rp ${Number(prod.price).toLocaleString('id-ID')}`;
+            document.getElementById('detailModalDesc').innerText = prod.desc;
+
+            const buyBtn = document.getElementById('detailModalBuyBtn');
+            if (Number(prod.stock) <= 0) {
+                buyBtn.disabled = true;
+                buyBtn.className = "bg-slate-200 text-slate-400 font-bold py-3 rounded-xl text-xs w-full cursor-not-allowed";
+                buyBtn.innerHTML = `<span>Stok Habis</span>`;
+            } else {
+                buyBtn.disabled = false;
+                buyBtn.className = "bg-brand-teal hover:bg-brand-teal-dark text-white font-bold py-3 rounded-xl text-xs w-full shadow-md flex items-center justify-center space-x-2";
+                buyBtn.onclick = function() {
+                    addToCart(prod.id);
+                    closeImageDetail();
+                };
+                buyBtn.innerHTML = `<i class="fa-solid fa-cart-plus"></i><span>Masukkan ke Keranjang</span>`;
+            }
+
+            document.getElementById('imageDetailModal').classList.remove('hidden');
+        }
+
+        function closeImageDetail() {
+            document.getElementById('imageDetailModal').classList.add('hidden');
+        }
+
         function filterCategory(cat) {
             activeCategory = cat;
             document.querySelectorAll('.category-btn').forEach(btn => {
@@ -533,7 +596,7 @@
             renderProducts();
         }
 
-        // FUNGSI KERANJANG
+        // KERANJANG & BATALKAN PESANAN DENGAN ALASAN
         function addToCart(productId) {
             const prod = products.find(p => String(p.id) === String(productId));
             if (!prod || Number(prod.stock) <= 0) return;
@@ -553,6 +616,22 @@
             saveCart();
             updateCartUI();
             toggleCartDrawer();
+        }
+
+        function cancelCartWithReason() {
+            if (cart.length === 0) {
+                alert('Keranjang belanja Anda sudah kosong.');
+                return;
+            }
+
+            const reason = prompt('Silakan tuliskan alasan pembatalan pesanan Anda (Opsional):', 'Ingin mengubah pilihan barang');
+            if (reason !== null) {
+                cart = [];
+                saveCart();
+                updateCartUI();
+                toggleCartDrawer();
+                alert(`Pesanan telah dibatalkan. Terima kasih atas konfirmasinya.`);
+            }
         }
 
         function updateQty(id, delta) {
@@ -708,10 +787,10 @@
             const hasNewOrder = orders.some(o => o.status === 'Baru');
 
             if (hasNewOrder) {
-                dot.className = "w-3 h-3 rounded-full bg-brand-coral blink-red shadow-lg";
+                dot.className = "w-2.5 h-2.5 rounded-full bg-brand-coral blink-red shadow-lg";
                 if(adminDot) adminDot.className = "w-3.5 h-3.5 rounded-full bg-brand-coral blink-red";
             } else {
-                dot.className = "w-3 h-3 rounded-full bg-emerald-400";
+                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-400";
                 if(adminDot) adminDot.className = "w-3.5 h-3.5 rounded-full bg-emerald-500";
             }
         }
